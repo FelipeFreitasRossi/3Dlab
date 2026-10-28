@@ -7,21 +7,27 @@
   background: linear-gradient(
     180deg,
     var(--color-surface) 0%,
-    rgba(16, 16, 19, 0.7) 100%
+    rgb(var(--rgb-elev) / 0.7) 100%
   );
   overflow: hidden;
+
+  /* Tilt 3D sutil (máx. 6°): --rx e --ry são escritas por useTilt */
+  --lift: 0px;
+  transform-style: preserve-3d;
+  transform: perspective(900px) translate3d(0, var(--lift), 0)
+    rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg));
   transition:
-    transform var(--duration-base) var(--ease-out),
+    transform 180ms var(--ease-out),
     border-color var(--duration-base) var(--ease-out),
     box-shadow var(--duration-base) var(--ease-out);
 }
 
 .card:hover {
-  transform: translateY(-4px);
+  --lift: -4px;
   border-color: var(--color-border-strong);
   box-shadow:
-    0 12px 40px rgba(0, 0, 0, 0.4),
-    0 0 0 1px rgba(220, 225, 240, 0.04);
+    0 12px 40px rgb(var(--rgb-shadow) / 0.4),
+    0 0 0 1px rgb(var(--rgb-glow) / 0.04);
 }
 
 /* ============ Área clicável (abre modal) ============ */
@@ -68,17 +74,17 @@
   background:
     repeating-linear-gradient(
       180deg,
-      rgba(255, 255, 255, 0.028) 0px,
-      rgba(255, 255, 255, 0.028) 1px,
+      rgb(var(--rgb-fg) / 0.028) 0px,
+      rgb(var(--rgb-fg) / 0.028) 1px,
       transparent 1px,
       transparent 4px
     ),
     radial-gradient(
       circle at 30% 30%,
-      var(--product-accent, rgba(180, 190, 220, 0.15)),
+      var(--product-accent, rgb(var(--fx-1) / 0.15)),
       transparent 65%
     ),
-    linear-gradient(135deg, #1a1a20 0%, #101013 100%);
+    linear-gradient(135deg, var(--ph-a) 0%, var(--ph-b) 100%);
   transition: transform var(--duration-slow) var(--ease-out);
 }
 
@@ -104,7 +110,7 @@
 .categoryBadge {
   left: var(--space-3);
   color: var(--color-text);
-  background: rgba(10, 10, 11, 0.7);
+  background: rgb(var(--rgb-bg) / 0.7);
   border: 1px solid var(--color-border-strong);
 }
 
@@ -164,7 +170,7 @@
   align-items: center;
   gap: var(--space-1);
   font-size: var(--fs-xs);
-  color: var(--color-text-subtle);
+  color: var(--color-text-muted);
 }
 
 /* ============ CTA ============ */
@@ -194,11 +200,18 @@
 
 .ctaArrow {
   margin-left: auto;
-  opacity: 0.6;
+  opacity: 0.9;
   transition: transform var(--duration-fast) var(--ease-out);
 }
 
 .cta:hover .ctaArrow {
   transform: translate(2px, -2px);
   opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .card:hover {
+    transform: none;
+  }
 }

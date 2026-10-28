@@ -14,7 +14,6 @@ export function useParallax<T extends HTMLElement = HTMLDivElement>(speed = 0.2)
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     let rafId = 0;
-    let lastY = 0;
 
     const update = () => {
       const y = window.scrollY * speed;
@@ -23,7 +22,6 @@ export function useParallax<T extends HTMLElement = HTMLDivElement>(speed = 0.2)
     };
 
     const onScroll = () => {
-      lastY = window.scrollY;
       if (!rafId) rafId = requestAnimationFrame(update);
     };
 

@@ -1,30 +1,32 @@
-import { MessageCircle } from "lucide-react";
-import { WHATSAPP_URL } from "../../data/site";
+import { buildWhatsAppUrl } from "../../data/site";
+import { usePreferences } from "../../context/usePreferences";
+import { useSectionFx } from "../../hooks/useSectionFx";
+import { WhatsAppIcon } from "../BrandIcons";
 import { Reveal } from "../Reveal/Reveal";
 import styles from "./Contact.module.css";
 
 export function Contact() {
+  const { t } = usePreferences();
+  const ref = useSectionFx<HTMLElement>();
+
   return (
-    <section id="contato" className={styles.section}>
-      <div className={styles.inner}>
+    <section ref={ref} id="contato" className={styles.section}>
+      <div className={`${styles.inner} fx-fade`}>
         <Reveal>
-          <h2 className={styles.title}>Tem uma ideia? Vamos dar forma.</h2>
+          <h2 className={styles.title}>{t("contact.title")}</h2>
         </Reveal>
         <Reveal delay={80}>
-          <p className={styles.text}>
-            Conte o que você precisa. Respondemos com prazo, possibilidades e
-            próximos passos — sem compromisso.
-          </p>
+          <p className={styles.text}>{t("contact.text")}</p>
         </Reveal>
         <Reveal delay={160}>
           <a
-            href={WHATSAPP_URL}
+            href={buildWhatsAppUrl(t("whatsapp.defaultMessage"))}
             target="_blank"
             rel="noopener noreferrer"
             className={styles.cta}
           >
-            <MessageCircle size={20} aria-hidden="true" />
-            Conversar no WhatsApp
+            <WhatsAppIcon size={20} />
+            {t("contact.cta")}
           </a>
         </Reveal>
       </div>

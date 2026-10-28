@@ -1,30 +1,11 @@
 import { BadgeCheck, Quote, Star } from "lucide-react";
+import { usePreferences } from "../../context/usePreferences";
+import { useSectionFx } from "../../hooks/useSectionFx";
 import { Reveal } from "../Reveal/Reveal";
 import styles from "./Testimonials.module.css";
 
-const TESTIMONIALS = [
-  {
-    quote:
-      "Precisava de uma peça de reposição que não existe mais no mercado. Recebi algo melhor que o original.",
-    author: "Cliente A",
-    role: "Reposição técnica",
-    rating: 5,
-  },
-  {
-    quote:
-      "O cuidado com o acabamento foi o que me surpreendeu. Não parece impressão 3D de longe.",
-    author: "Cliente B",
-    role: "Peça decorativa",
-    rating: 5,
-  },
-  {
-    quote:
-      "Do primeiro contato à entrega, tudo foi claro. Sabia exatamente o que esperar em cada etapa.",
-    author: "Cliente C",
-    role: "Protótipo funcional",
-    rating: 5,
-  },
-];
+const RATING = 5;
+const ITEM_COUNT = 3;
 
 function initials(name: string) {
   return name
@@ -36,26 +17,27 @@ function initials(name: string) {
 }
 
 export function Testimonials() {
+  const { t } = usePreferences();
+  const ref = useSectionFx<HTMLElement>();
+
   return (
-    <section className={styles.section}>
-      <div className={styles.inner}>
+    <section ref={ref} className={styles.section}>
+      <div className={`${styles.inner} fx-fade`}>
         <Reveal>
           <div className={styles.header}>
-            <p className={styles.eyebrow}>Quem já encomendou</p>
-            <h2 className={styles.title}>
-              O que dizem sobre a Pedra Lunar.
-            </h2>
-            <p className={styles.subtitle}>
-              Feedback de projetos entregues.
-            </p>
+            <p className={styles.eyebrow}>{t("testimonials.eyebrow")}</p>
+            <h2 className={styles.title}>{t("testimonials.title")}</h2>
+            <p className={styles.subtitle}>{t("testimonials.subtitle")}</p>
           </div>
         </Reveal>
 
         <div className={styles.grid}>
-          {TESTIMONIALS.map((item, index) => (
+          {Array.from({ length: ITEM_COUNT }).map((_, index) => (
             <Reveal
-              key={item.author}
-              delay={index * 90}
+              key={index}
+              delay={index * 120}
+              distance={40}
+              scale
               className={styles.cardWrapper}
             >
               <article className={styles.card}>
@@ -67,9 +49,9 @@ export function Testimonials() {
 
                 <div
                   className={styles.rating}
-                  aria-label={`${item.rating} de 5 estrelas`}
+                  aria-label={t("testimonials.ratingLabel", { n: RATING })}
                 >
-                  {Array.from({ length: item.rating }).map((_, i) => (
+                  {Array.from({ length: RATING }).map((_, i) => (
                     <Star
                       key={i}
                       size={14}
@@ -80,24 +62,24 @@ export function Testimonials() {
                   ))}
                 </div>
 
-                <p className={styles.quote}>"{item.quote}"</p>
+                <p className={styles.quote}>&ldquo;{t(`testimonials.items.${index}.quote`)}&rdquo;</p>
 
                 <div className={styles.divider} aria-hidden="true" />
 
                 <footer className={styles.authorRow}>
                   <span className={styles.avatar} aria-hidden="true">
-                    {initials(item.author)}
+                    {initials(t(`testimonials.items.${index}.author`))}
                   </span>
                   <div className={styles.authorInfo}>
                     <span className={styles.authorName}>
-                      {item.author}
+                      {t(`testimonials.items.${index}.author`)}
                       <BadgeCheck
                         size={14}
                         className={styles.verified}
-                        aria-label="Cliente verificado"
+                        aria-label={t("testimonials.verified")}
                       />
                     </span>
-                    <span className={styles.authorRole}>{item.role}</span>
+                    <span className={styles.authorRole}>{t(`testimonials.items.${index}.role`)}</span>
                   </div>
                 </footer>
               </article>

@@ -1,19 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { CSSProperties } from "react";
-import { ArrowUpRight, Check, Clock, MessageCircle, X } from "lucide-react";
+import { ArrowUpRight, Check, Clock, X } from "lucide-react";
 import { buildWhatsAppUrl } from "../../data/site";
-import { PRODUCT_CATEGORIES } from "../../types/product";
+import { usePreferences } from "../../context/usePreferences";
+import { WhatsAppIcon } from "../BrandIcons";
 import type { Product } from "../../types/product";
 import styles from "./ProductModal.module.css";
-
-const priceFormatter = new Intl.NumberFormat("pt-BR", {
-  style: "currency",
-  currency: "BRL",
-});
-
-function categoryLabel(id: Product["category"]) {
-  return PRODUCT_CATEGORIES.find((c) => c.id === id)?.label ?? id;
-}
 
 interface ProductModalProps {
   product: Product;
@@ -22,6 +14,11 @@ interface ProductModalProps {
 }
 
 export function ProductModal({ product, closing, onClose }: ProductModalProps) {
+  const { t, language } = usePreferences();
+  const priceFormatter = useMemo(
+    () => new Intl.NumberFormat(language, { style: "currency", currency: "BRL" }),
+    [language],
+  );
   const [activeImage, setActiveImage] = useState(0);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const previousFocusRef = useRef<HTMLElement | null>(null);
@@ -39,10 +36,13 @@ export function ProductModal({ product, closing, onClose }: ProductModalProps) {
   useEffect(() => {
     previousFocusRef.current = document.activeElement as HTMLElement | null;
     document.body.style.overflow = "hidden";
+    // Avisa o resto do site (ex.: balão do WhatsApp) que há um modal aberto
+    document.documentElement.setAttribute("data-modal-open", "true");
     closeButtonRef.current?.focus();
 
     return () => {
       document.body.style.overflow = "";
+      document.documentElement.removeAttribute("data-modal-open");
       previousFocusRef.current?.focus?.();
     };
   }, []);
@@ -57,8 +57,10 @@ export function ProductModal({ product, closing, onClose }: ProductModalProps) {
 
   const currentImage = gallery[activeImage];
 
-  const whatsappMessage = `Olá! Tenho interesse no produto "${product.name}" (${categoryLabel(product.category)}). Poderia me passar mais informações?`;
-  const whatsappUrl = buildWhatsAppUrl(whatsappMessage);
+  const category = t(`categories.${product.category}`);
+  const whatsappUrl = buildWhatsAppUrl(
+    t("product.whatsappMessage", { name: product.name, category }),
+  );
 
   return (
     <div
@@ -78,7 +80,7 @@ export function ProductModal({ product, closing, onClose }: ProductModalProps) {
           type="button"
           className={styles.closeButton}
           onClick={onClose}
-          aria-label="Fechar detalhes do produto"
+          aria-label={t("product.close")}
         >
           <X size={20} aria-hidden="true" />
         </button>
@@ -91,7 +93,11 @@ export function ProductModal({ product, closing, onClose }: ProductModalProps) {
                 <img
                   key={currentImage}
                   src={currentImage}
-                  alt={`${product.name} — imagem ${activeImage + 1} de ${gallery.length}`}
+                  alt={t("product.imageAlt", {
+                    name: product.name,
+                    n: activeImage + 1,
+                    total: gallery.length,
+                  })}
                   className={styles.mainImage}
                   width={800}
                   height={400}
@@ -107,7 +113,7 @@ export function ProductModal({ product, closing, onClose }: ProductModalProps) {
               )}
 
               <span className={styles.categoryBadge}>
-                {categoryLabel(product.category)}
+                {category}
               </span>
               {product.badge && (
                 <span className={styles.highlightBadge}>{product.badge}</span>
@@ -117,7 +123,7 @@ export function ProductModal({ product, closing, onClose }: ProductModalProps) {
             {gallery.length > 1 && (
               <div
                 className={styles.thumbnails}
-                aria-label="Miniaturas do produto"
+                aria-label={t("product.thumbs")}
               >
                 {gallery.map((src, index) => (
                   <button
@@ -127,7 +133,7 @@ export function ProductModal({ product, closing, onClose }: ProductModalProps) {
                       activeImage === index ? styles.thumbActive : ""
                     }`}
                     onClick={() => setActiveImage(index)}
-                    aria-label={`Ver imagem ${index + 1}`}
+                    aria-label={t("product.viewImage", { n: index + 1 })}
                     aria-current={activeImage === index}
                   >
                     <img src={src} alt="" loading="lazy" />
@@ -172,7 +178,7 @@ export function ProductModal({ product, closing, onClose }: ProductModalProps) {
               </span>
               <span className={styles.leadTime}>
                 <Clock size={14} aria-hidden="true" />
-                {product.leadTimeDays} dias úteis
+                {t("product.leadTime", { days: product.leadTimeDays })}
               </span>
             </div>
 
@@ -182,8 +188,8 @@ export function ProductModal({ product, closing, onClose }: ProductModalProps) {
               rel="noopener noreferrer"
               className={styles.cta}
             >
-              <MessageCircle size={18} aria-hidden="true" />
-              Falar sobre este produto
+              <WhatsAppIcon size={18} />
+              {t("product.cta")}
               <ArrowUpRight
                 size={16}
                 className={styles.ctaArrow}

@@ -1,21 +1,29 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import { Search, SlidersHorizontal } from "lucide-react";
-import { PRODUCTS } from "../../data/products";
+import { usePreferences } from "../../context/usePreferences";
+import { useProducts } from "../../hooks/useProducts";
+import { useSectionFx } from "../../hooks/useSectionFx";
 import { PRODUCT_CATEGORIES } from "../../types/product";
 import type { CategoryFilter, Product } from "../../types/product";
 import { Reveal } from "../Reveal/Reveal";
 import { ProductCard } from "./ProductCard";
 import { ProductModal } from "./ProductModal";
+import { ProductSkeleton } from "./ProductSkeleton";
 import styles from "./Catalog.module.css";
 
-const ALL_FILTERS: { id: CategoryFilter; label: string }[] = [
-  { id: "todos", label: "Todos" },
-  ...PRODUCT_CATEGORIES.map((c) => ({ id: c.id, label: c.label })),
+const FILTER_IDS: CategoryFilter[] = [
+  "todos",
+  ...PRODUCT_CATEGORIES.map((c) => c.id),
 ];
+
+const SKELETON_COUNT = 6;
 
 const MODAL_EXIT_MS = 220;
 
 export function Catalog() {
+  const { t } = usePreferences();
+  const { products, loading } = useProducts();
+  const sectionRef = useSectionFx<HTMLElement>();
   const [activeCategory, setActiveCategory] =
     useState<CategoryFilter>("todos");
   const [query, setQuery] = useState("");
@@ -26,7 +34,7 @@ export function Catalog() {
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    return PRODUCTS.filter((product) => {
+    return products.filter((product) => {
       const matchesCategory =
         activeCategory === "todos" || product.category === activeCategory;
       const matchesQuery =
@@ -35,7 +43,7 @@ export function Catalog() {
         product.shortDescription.toLowerCase().includes(q);
       return matchesCategory && matchesQuery;
     });
-  }, [activeCategory, query]);
+  }, [products, activeCategory, query]);
 
   const handleOpen = useCallback((product: Product) => {
     setSelectedProduct(product);
@@ -56,16 +64,13 @@ export function Catalog() {
   }, []);
 
   return (
-    <section id="catalogo" className={styles.section}>
-      <div className={styles.inner}>
+    <section ref={sectionRef} id="catalogo" className={styles.section}>
+      <div className={`${styles.inner} fx-fade`}>
         <Reveal>
           <div className={styles.header}>
-            <p className={styles.eyebrow}>Catálogo</p>
-            <h2 className={styles.title}>Peças prontas e sob medida.</h2>
-            <p className={styles.subtitle}>
-              Cada peça pode ser personalizada — o contato direto pelo
-              WhatsApp define cor, acabamento e prazo.
-            </p>
+            <p className={styles.eyebrow}>{t("catalog.eyebrow")}</p>
+            <h2 className={styles.title}>{t("catalog.title")}</h2>
+            <p className={styles.subtitle}>{t("catalog.subtitle")}</p>
           </div>
         </Reveal>
 
@@ -81,43 +86,57 @@ export function Catalog() {
                 type="search"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Buscar por nome ou descrição..."
+                placeholder={t("catalog.searchPlaceholder")}
                 className={styles.searchInput}
-                aria-label="Buscar produtos"
+                aria-label={t("catalog.searchLabel")}
               />
             </div>
 
             <div
               className={styles.filters}
               role="group"
-              aria-label="Filtrar por categoria"
+              aria-label={t("catalog.filterLabel")}
             >
               <SlidersHorizontal
                 size={16}
                 className={styles.filtersIcon}
                 aria-hidden="true"
               />
-              {ALL_FILTERS.map((filter) => (
+              {FILTER_IDS.map((filterId) => (
                 <button
-                  key={filter.id}
+                  key={filterId}
                   type="button"
-                  onClick={() => setActiveCategory(filter.id)}
+                  onClick={() => setActiveCategory(filterId)}
                   className={`${styles.filter} ${
-                    activeCategory === filter.id ? styles.filterActive : ""
+                    activeCategory === filterId ? styles.filterActive : ""
                   }`}
-                  aria-pressed={activeCategory === filter.id}
+                  aria-pressed={activeCategory === filterId}
                 >
-                  {filter.label}
+                  {filterId === "todos"
+                    ? t("catalog.all")
+                    : t(`categories.${filterId}`)}
                 </button>
               ))}
             </div>
           </div>
         </Reveal>
 
-        {filtered.length === 0 ? (
+        {loading ? (
+          <div
+            className={styles.grid}
+            aria-busy="true"
+            aria-label={t("catalog.loading")}
+          >
+            {Array.from({ length: SKELETON_COUNT }).map((_, i) => (
+              <div key={i} className={styles.gridItem}>
+                <ProductSkeleton />
+              </div>
+            ))}
+          </div>
+        ) : filtered.length === 0 ? (
           <Reveal>
             <div className={styles.empty}>
-              <p>Nenhum produto encontrado para essa combinação.</p>
+              <p>{t("catalog.empty")}</p>
               <button
                 type="button"
                 onClick={() => {
@@ -126,7 +145,7 @@ export function Catalog() {
                 }}
                 className={styles.clearButton}
               >
-                Limpar filtros
+                {t("catalog.clear")}
               </button>
             </div>
           </Reveal>
@@ -135,7 +154,11 @@ export function Catalog() {
             {filtered.map((product, index) => (
               <Reveal
                 key={product.id}
-                delay={Math.min(index * 60, 300)}
+                // stagger: cada coluna entra um pouco depois da anterior,
+                // cada linha um pouco depois da de cima
+                delay={(index % 3) * 90 + Math.floor(index / 3) * 50}
+                distance={36}
+                scale
                 className={styles.gridItem}
               >
                 <ProductCard product={product} onOpen={handleOpen} />

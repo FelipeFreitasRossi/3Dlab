@@ -7,14 +7,36 @@
   --color-bg-elevated: #101013;
   --color-surface: #16161a;
   --color-surface-hover: #1c1c22;
-  --color-border: rgba(255, 255, 255, 0.06);
-  --color-border-strong: rgba(255, 255, 255, 0.14);
+  --color-border: rgb(var(--rgb-fg) / 0.06);
+  --color-border-strong: rgb(var(--rgb-fg) / 0.14);
   --color-text: #f0f0f2;
   --color-text-muted: #9a9aa3;
-  --color-text-subtle: #5f5f68;
+  --color-text-subtle: #8c8c96;
   --color-accent: #e6e6eb;
-  --color-accent-soft: rgba(230, 230, 235, 0.08);
-  --color-glow: rgba(220, 225, 240, 0.10);
+  --color-accent-soft: rgb(var(--rgb-accent) / 0.08);
+  --color-glow: rgb(var(--rgb-glow) / 0.10);
+
+  /* ---- Canais RGB usados em rgb(var(--x) / alpha) — mudam por tema ---- */
+  --rgb-bg: 10 10 11;
+  --rgb-overlay: 5 5 7;
+  --rgb-fg: 255 255 255;
+  --rgb-shadow: 0 0 0;
+  --rgb-elev: 16 16 19;
+  --rgb-surface-hi: 30 30 35;
+  --rgb-accent: 230 230 235;
+  --rgb-glow: 220 225 240;
+  --fx-1: 180 190 220;
+  --fx-2: 220 225 240;
+  --fx-3: 140 150 180;
+  --fx-4: 200 210 240;
+  --fx-5: 160 170 200;
+  --ph-a: #1a1a20;
+  --ph-b: #101013;
+  --avatar-a: #2a2a30;
+  --avatar-b: #16161a;
+  --text-grad-a: #f0f0f2;
+  --text-grad-b: #9a9aa3;
+  color-scheme: dark;
 
   /* ============================================================
      GRID DE FUNDO — variáveis do efeito principal
@@ -22,8 +44,8 @@
      ============================================================ */
   --grid-size: 64px;
   --grid-line-opacity: 0.055;
-  --grid-line: rgba(255, 255, 255, var(--grid-line-opacity));
-  --grid-line-strong: rgba(255, 255, 255, 0.10);
+  --grid-line: rgb(var(--rgb-fg) / var(--grid-line-opacity));
+  --grid-line-strong: rgb(var(--rgb-fg) / 0.10);
   /* Altura em % do fade radial que "apaga" a grid nas bordas */
   --grid-fade-radius-x: 75%;
   --grid-fade-radius-y: 65%;
@@ -35,7 +57,7 @@
     "Helvetica Neue", Arial, sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
 
-  --fs-xs: 0.75rem;    /* 12px */
+  --fs-xs: 0.8125rem;  /* 13px */
   --fs-sm: 0.875rem;   /* 14px */
   --fs-base: 1rem;     /* 16px */
   --fs-lg: 1.125rem;   /* 18px */
@@ -83,9 +105,56 @@
   --duration-slow: 600ms;
 
   --z-bg: -1;
+  --z-float: 60;
+  --z-loading: 200;
   --z-base: 1;
   --z-header: 50;
   --z-overlay: 100;
+}
+
+
+/* ============================================================
+   TEMA CLARO — sobrescreve as mesmas variáveis do tema escuro.
+   Ativado por <html data-theme="light">.
+   ============================================================ */
+[data-theme="light"] {
+  --color-bg: #f6f4ef;
+  --color-bg-elevated: #fbfaf7;
+  --color-surface: #ffffff;
+  --color-surface-hover: #f0ede6;
+  --color-border: rgba(20, 20, 24, 0.09);
+  --color-border-strong: rgba(20, 20, 24, 0.2);
+  --color-text: #17171b;
+  --color-text-muted: #55555e;
+  --color-text-subtle: #686872;
+  --color-accent: #17171b;
+  --color-accent-soft: rgba(20, 20, 24, 0.06);
+  --color-glow: rgba(255, 170, 100, 0.2);
+
+  --grid-line-opacity: 0.075;
+  --grid-line: rgb(var(--rgb-fg) / var(--grid-line-opacity));
+
+  --rgb-bg: 246 244 239;
+  --rgb-overlay: 40 34 28;
+  --rgb-fg: 20 20 24;
+  --rgb-shadow: 60 45 30;
+  --rgb-elev: 251 250 247;
+  --rgb-surface-hi: 255 255 255;
+  --rgb-accent: 23 23 27;
+  --rgb-glow: 255 170 100;
+  /* orbs em tons mais quentes */
+  --fx-1: 255 176 110;
+  --fx-2: 255 205 150;
+  --fx-3: 240 140 120;
+  --fx-4: 255 195 120;
+  --fx-5: 235 165 140;
+  --ph-a: #ece8df;
+  --ph-b: #f8f6f1;
+  --avatar-a: #e3ded3;
+  --avatar-b: #f3f0e9;
+  --text-grad-a: #17171b;
+  --text-grad-b: #6b6b75;
+  color-scheme: light;
 }
 
 /* Ajustes responsivos globais */

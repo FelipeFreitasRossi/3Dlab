@@ -32,7 +32,7 @@
 
 .subtitle {
   font-size: var(--fs-sm);
-  color: var(--color-text-subtle);
+  color: var(--color-text-muted);
   max-width: 48ch;
 }
 
@@ -66,7 +66,7 @@
   background: linear-gradient(
     180deg,
     var(--color-surface) 0%,
-    rgba(16, 16, 19, 0.7) 100%
+    rgb(var(--rgb-elev) / 0.7) 100%
   );
   overflow: hidden;
   transition:
@@ -79,8 +79,8 @@
   transform: translateY(-4px);
   border-color: var(--color-border-strong);
   box-shadow:
-    0 12px 40px rgba(0, 0, 0, 0.4),
-    0 0 0 1px rgba(220, 225, 240, 0.04);
+    0 12px 40px rgb(var(--rgb-shadow) / 0.4),
+    0 0 0 1px rgb(var(--rgb-glow) / 0.04);
 }
 
 /* Glow radial que aparece no hover, atrás do conteúdo */
@@ -90,7 +90,7 @@
   inset: 0;
   background: radial-gradient(
     circle at 50% 0%,
-    rgba(220, 225, 240, 0.06) 0%,
+    rgb(var(--rgb-glow) / 0.06) 0%,
     transparent 60%
   );
   opacity: 0;
@@ -154,7 +154,7 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #2a2a30 0%, #16161a 100%);
+  background: linear-gradient(135deg, var(--avatar-a) 0%, var(--avatar-b) 100%);
   border: 1px solid var(--color-border-strong);
   font-size: var(--fs-sm);
   font-weight: 600;
@@ -185,5 +185,5 @@
 
 .authorRole {
   font-size: var(--fs-xs);
-  color: var(--color-text-subtle);
+  color: var(--color-text-muted);
 }

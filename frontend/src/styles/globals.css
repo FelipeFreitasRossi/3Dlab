@@ -150,9 +150,14 @@ p {
   }
 }
 
+/* ============================================================
+   REVEAL — entrada com direção (up/down/left/right) via CSS variables.
+   Só transform + opacity (GPU). Veja components/Reveal/Reveal.tsx
+   ============================================================ */
 .reveal {
   opacity: 0;
-  transform: translateY(24px);
+  transform: translate3d(var(--reveal-x, 0px), var(--reveal-y, 24px), 0)
+    scale(var(--reveal-s, 1));
   transition:
     opacity var(--duration-slow) var(--ease-out),
     transform var(--duration-slow) var(--ease-out);
@@ -161,8 +166,19 @@ p {
 
 .reveal--visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: none;
   will-change: auto;
+}
+
+/* Transição entre seções: a seção "respira" conforme passa pela tela.
+   --sp / --sp-abs são escritas por useSectionFx (sem re-render). */
+.fx-fade {
+  opacity: clamp(0.25, calc(1.35 - var(--sp-abs, 0) * 1.1), 1);
+  transform: translate3d(0, calc(var(--sp, 0) * 28px), 0);
+}
+
+[data-fx-active="true"] .fx-fade {
+  will-change: transform, opacity;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -171,6 +187,15 @@ p {
     transform: none;
     transition: none;
   }
+  .fx-fade {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Durante a tela de carregamento o scroll fica travado */
+html[data-booting="true"] {
+  overflow: hidden;
 }
 
 /* Textura de ruído sutil — SVG inline, custo quase zero */

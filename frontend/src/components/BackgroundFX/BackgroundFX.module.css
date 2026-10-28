@@ -17,11 +17,11 @@
   background: conic-gradient(
     from calc(var(--scroll-progress, 0) * 240deg) at 50% 40%,
     transparent 0deg,
-    rgba(180, 190, 220, 0.07) 60deg,
+    rgb(var(--fx-1) / 0.07) 60deg,
     transparent 120deg,
-    rgba(220, 225, 240, 0.05) 180deg,
+    rgb(var(--fx-2) / 0.05) 180deg,
     transparent 240deg,
-    rgba(140, 150, 180, 0.06) 300deg,
+    rgb(var(--fx-3) / 0.06) 300deg,
     transparent 360deg
   );
   filter: blur(50px);
@@ -36,8 +36,8 @@
   position: absolute;
   inset: -30%;
   background-image:
-    linear-gradient(to right, rgba(255, 255, 255, 0.028) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.028) 1px, transparent 1px);
+    linear-gradient(to right, rgb(var(--rgb-fg) / 0.028) 1px, transparent 1px),
+    linear-gradient(to bottom, rgb(var(--rgb-fg) / 0.028) 1px, transparent 1px);
   background-size: 96px 96px;
   background-position: center;
   mask-image: radial-gradient(
@@ -71,7 +71,7 @@
   height: 520px;
   top: -180px;
   left: -160px;
-  background: radial-gradient(circle, rgba(180, 190, 220, 0.30), transparent 70%);
+  background: radial-gradient(circle, rgb(var(--fx-1) / 0.30), transparent 70%);
   opacity: calc(0.38 - var(--scroll-progress, 0) * 0.12);
 }
 
@@ -80,7 +80,7 @@
   height: 420px;
   top: 40%;
   right: -120px;
-  background: radial-gradient(circle, rgba(140, 150, 180, 0.24), transparent 70%);
+  background: radial-gradient(circle, rgb(var(--fx-3) / 0.24), transparent 70%);
   opacity: calc(0.30 + var(--scroll-progress, 0) * 0.08);
 }
 
@@ -89,7 +89,7 @@
   height: 360px;
   bottom: -120px;
   left: 30%;
-  background: radial-gradient(circle, rgba(220, 225, 240, 0.16), transparent 70%);
+  background: radial-gradient(circle, rgb(var(--fx-2) / 0.16), transparent 70%);
   opacity: calc(0.22 - var(--scroll-progress, 0) * 0.06);
 }
 
@@ -98,7 +98,7 @@
   height: 300px;
   top: 15%;
   right: 22%;
-  background: radial-gradient(circle, rgba(200, 210, 240, 0.18), transparent 70%);
+  background: radial-gradient(circle, rgb(var(--fx-4) / 0.18), transparent 70%);
   opacity: calc(0.20 + var(--scroll-progress, 0) * 0.10);
 }
 
@@ -107,6 +107,6 @@
   height: 440px;
   bottom: 20%;
   left: -10%;
-  background: radial-gradient(circle, rgba(160, 170, 200, 0.14), transparent 70%);
+  background: radial-gradient(circle, rgb(var(--fx-5) / 0.14), transparent 70%);
   opacity: calc(0.18 + var(--scroll-progress, 0) * 0.05);
 }

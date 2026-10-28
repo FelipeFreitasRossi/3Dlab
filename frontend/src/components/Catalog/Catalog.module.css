@@ -35,7 +35,7 @@
 
 .subtitle {
   font-size: var(--fs-sm);
-  color: var(--color-text-subtle);
+  color: var(--color-text-muted);
   max-width: 56ch;
 }
 

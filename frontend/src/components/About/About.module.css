@@ -44,3 +44,105 @@
   color: var(--color-text);
   font-weight: 500;
 }
+/* ============ Parallax e decoração (efeitos de scroll) ============ */
+.section {
+  overflow: clip;
+}
+
+.layerTitle {
+  transform: translate3d(0, calc(var(--sp, 0) * -34px), 0);
+}
+
+.layerText {
+  transform: translate3d(0, calc(var(--sp, 0) * 34px), 0);
+}
+
+.ring {
+  position: absolute;
+  top: 8%;
+  right: -140px;
+  width: 460px;
+  height: 460px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgb(var(--fx-2) / 0.16),
+    transparent 65%
+  );
+  pointer-events: none;
+  transform: translate3d(0, calc(var(--sp, 0) * -120px), 0)
+    rotate(calc(var(--sp, 0) * 50deg));
+}
+
+.ringSmall {
+  top: auto;
+  right: auto;
+  bottom: 6%;
+  left: -90px;
+  width: 260px;
+  height: 260px;
+  transform: translate3d(0, calc(var(--sp, 0) * 90px), 0)
+    rotate(calc(var(--sp, 0) * -70deg));
+}
+
+.section[data-fx-active="true"] .ring,
+.section[data-fx-active="true"] .layerTitle,
+.section[data-fx-active="true"] .layerText {
+  will-change: transform;
+}
+
+/* ============ Números animados ============ */
+.stats {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--color-border);
+}
+
+.statItem {
+  text-align: center;
+}
+
+.statValue {
+  font-size: var(--fs-3xl);
+  font-weight: 600;
+  line-height: var(--lh-tight);
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums;
+}
+
+.statLabel {
+  margin-top: var(--space-2);
+  font-size: var(--fs-xs);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-text-subtle);
+}
+
+@media (max-width: 480px) {
+  .statValue {
+    font-size: var(--fs-2xl);
+  }
+  .statLabel {
+    letter-spacing: 0.06em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .layerTitle,
+  .layerText,
+  .ring,
+  .ringSmall {
+    transform: none;
+  }
+}
+
+/* o conteúdo fica por cima dos anéis decorativos */
+.inner {
+  position: relative;
+  z-index: 1;
+}

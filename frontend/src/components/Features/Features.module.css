@@ -51,7 +51,7 @@
   background: linear-gradient(
     180deg,
     var(--color-surface) 0%,
-    rgba(16, 16, 19, 0.6) 100%
+    rgb(var(--rgb-elev) / 0.6) 100%
   );
   transition:
     transform var(--duration-base) var(--ease-out),
@@ -62,7 +62,7 @@
 .card:hover {
   transform: translateY(-4px);
   border-color: var(--color-border-strong);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+  box-shadow: 0 12px 40px rgb(var(--rgb-shadow) / 0.35);
 }
 
 .icon {
@@ -85,4 +85,29 @@
 .cardText {
   font-size: var(--fs-sm);
   color: var(--color-text-muted);
+}
+/* ============ Parallax (efeitos de scroll) ============ */
+.layerHeader {
+  transform: translate3d(0, calc(var(--sp, 0) * -26px), 0);
+}
+
+.layer {
+  height: 100%;
+  transform: translate3d(0, calc(var(--sp, 0) * var(--k, 1) * 30px), 0);
+}
+
+.layer .card {
+  height: 100%;
+}
+
+.section[data-fx-active="true"] .layer,
+.section[data-fx-active="true"] .layerHeader {
+  will-change: transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .layerHeader,
+  .layer {
+    transform: none;
+  }
 }

@@ -1,0 +1,96 @@
+.float {
+  position: fixed;
+  right: max(16px, env(safe-area-inset-right));
+  bottom: max(16px, env(safe-area-inset-bottom));
+  z-index: var(--z-float); /* acima do conteúdo e do header, abaixo do modal */
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #25d366;
+  color: #fff;
+  box-shadow:
+    0 8px 24px rgb(var(--rgb-shadow) / 0.35),
+    0 0 0 1px rgb(255 255 255 / 0.08) inset;
+
+  /* estado inicial: escondido (pop-in acontece quando recebe .visible) */
+  opacity: 0;
+  transform: scale(0.4);
+  pointer-events: none;
+  transition:
+    opacity 300ms var(--ease-out),
+    transform 450ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    box-shadow var(--duration-base) var(--ease-out);
+}
+
+.visible {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+
+.visible:hover {
+  transform: scale(1.07);
+  box-shadow:
+    0 12px 32px rgb(37 211 102 / 0.4),
+    0 0 0 1px rgb(255 255 255 / 0.12) inset;
+}
+
+.float:focus-visible {
+  outline: 3px solid var(--color-text);
+  outline-offset: 3px;
+  border-radius: 50%;
+}
+
+/* Some enquanto o modal de produto está aberto */
+:global(html[data-modal-open="true"]) .float.visible {
+  opacity: 0;
+  transform: scale(0.6);
+  pointer-events: none;
+}
+
+/* ---------- Tooltip: sobe acima do botão ---------- */
+.tooltip {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 12px);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: var(--fs-sm);
+  font-weight: 500;
+  white-space: nowrap;
+  box-shadow: 0 8px 24px rgb(var(--rgb-shadow) / 0.3);
+  opacity: 0;
+  transform: translate3d(0, 6px, 0);
+  pointer-events: none;
+  transition:
+    opacity var(--duration-base) var(--ease-out),
+    transform var(--duration-base) var(--ease-out);
+}
+
+.float:hover .tooltip,
+.float:focus-visible .tooltip {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .float,
+  .tooltip {
+    transition: opacity 0.01ms;
+  }
+  .float,
+  .visible,
+  .visible:hover {
+    transform: none;
+  }
+  .tooltip,
+  .float:hover .tooltip,
+  .float:focus-visible .tooltip {
+    transform: none;
+  }
+}

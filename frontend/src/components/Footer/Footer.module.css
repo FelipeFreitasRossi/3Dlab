@@ -10,7 +10,7 @@
   background: linear-gradient(
     180deg,
     transparent 0%,
-    rgba(10, 10, 11, 0.6) 100%
+    rgb(var(--rgb-bg) / 0.6) 100%
   );
   margin-top: var(--space-10);
 }
@@ -27,7 +27,7 @@
   background: linear-gradient(
     90deg,
     transparent,
-    rgba(220, 225, 240, 0.4),
+    rgb(var(--rgb-glow) / 0.4),
     transparent
   );
   pointer-events: none;
@@ -88,7 +88,7 @@
   border-radius: 50%;
   object-fit: cover;
   border: 1px solid var(--color-border-strong);
-  box-shadow: 0 0 20px rgba(220, 225, 240, 0.10);
+  box-shadow: 0 0 20px rgb(var(--rgb-glow) / 0.10);
   transition:
     transform var(--duration-base) var(--ease-out),
     box-shadow var(--duration-base) var(--ease-out);
@@ -96,7 +96,7 @@
 
 .brand:hover .logo {
   transform: scale(1.06);
-  box-shadow: 0 0 28px rgba(220, 225, 240, 0.2);
+  box-shadow: 0 0 28px rgb(var(--rgb-glow) / 0.2);
 }
 
 .tagline {
@@ -138,7 +138,7 @@
   background: var(--color-accent);
   border-color: var(--color-accent);
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(230, 230, 235, 0.15);
+  box-shadow: 0 8px 24px rgb(var(--rgb-accent) / 0.15);
 }
 
 .socialLink:focus-visible {
@@ -160,7 +160,7 @@
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--color-text-subtle);
+  color: var(--color-text-muted);
   margin-bottom: var(--space-2);
 }
 
@@ -237,7 +237,7 @@
 
 .responseNote {
   font-size: var(--fs-xs);
-  color: var(--color-text-subtle);
+  color: var(--color-text-muted);
   font-style: italic;
   margin-top: var(--space-1);
 }
@@ -252,7 +252,7 @@
   padding-top: var(--space-5);
   border-top: 1px solid var(--color-border);
   font-size: var(--fs-xs);
-  color: var(--color-text-subtle);
+  color: var(--color-text-muted);
 }
 
 @media (min-width: 640px) {

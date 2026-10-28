@@ -1,18 +1,12 @@
+import { useMemo } from "react";
 import type { CSSProperties } from "react";
-import { ArrowUpRight, Clock, MessageCircle } from "lucide-react";
+import { ArrowUpRight, Clock } from "lucide-react";
 import { buildWhatsAppUrl } from "../../data/site";
-import { PRODUCT_CATEGORIES } from "../../types/product";
+import { usePreferences } from "../../context/usePreferences";
+import { useTilt } from "../../hooks/useTilt";
+import { WhatsAppIcon } from "../BrandIcons";
 import type { Product } from "../../types/product";
 import styles from "./ProductCard.module.css";
-
-const priceFormatter = new Intl.NumberFormat("pt-BR", {
-  style: "currency",
-  currency: "BRL",
-});
-
-function categoryLabel(id: Product["category"]) {
-  return PRODUCT_CATEGORIES.find((c) => c.id === id)?.label ?? id;
-}
 
 interface ProductCardProps {
   product: Product;
@@ -21,18 +15,27 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, onOpen }: ProductCardProps) {
-  const cardImage = product.image ?? product.images?.[0];
+  const { t, language } = usePreferences();
+  const tiltRef = useTilt<HTMLElement>(6); // inclinação máxima: 6 graus
+  const priceFormatter = useMemo(
+    () => new Intl.NumberFormat(language, { style: "currency", currency: "BRL" }),
+    [language],
+  );
 
-  const whatsappMessage = `Olá! Tenho interesse no produto "${product.name}" (${categoryLabel(product.category)}). Poderia me passar mais informações?`;
-  const whatsappUrl = buildWhatsAppUrl(whatsappMessage);
+  const cardImage = product.image ?? product.images?.[0];
+  const category = t(`categories.${product.category}`);
+
+  const whatsappUrl = buildWhatsAppUrl(
+    t("product.whatsappMessage", { name: product.name, category }),
+  );
 
   return (
-    <article className={styles.card}>
+    <article ref={tiltRef} className={styles.card}>
       <button
         type="button"
         className={styles.cardClickable}
         onClick={() => onOpen(product)}
-        aria-label={`Ver detalhes de ${product.name}`}
+        aria-label={t("product.viewDetails", { name: product.name })}
       >
         <div className={styles.imageArea}>
           {cardImage ? (
@@ -55,7 +58,7 @@ export function ProductCard({ product, onOpen }: ProductCardProps) {
           )}
 
           <span className={styles.categoryBadge}>
-            {categoryLabel(product.category)}
+            {category}
           </span>
 
           {product.badge && (
@@ -76,7 +79,7 @@ export function ProductCard({ product, onOpen }: ProductCardProps) {
           </span>
           <span className={styles.leadTime}>
             <Clock size={14} aria-hidden="true" />
-            {product.leadTimeDays} dias úteis
+            {t("product.leadTime", { days: product.leadTimeDays })}
           </span>
         </div>
 
@@ -86,8 +89,8 @@ export function ProductCard({ product, onOpen }: ProductCardProps) {
           rel="noopener noreferrer"
           className={styles.cta}
         >
-          <MessageCircle size={16} aria-hidden="true" />
-          Falar sobre este produto
+          <WhatsAppIcon size={16} />
+          {t("product.cta")}
           <ArrowUpRight
             size={14}
             className={styles.ctaArrow}

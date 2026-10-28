@@ -1,10 +1,20 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR" data-theme="dark" data-booting="true">
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>frontend</title>
+    <title>Pedra Lunar — 3D Lab</title>
+    <meta name="description" content="Impressão 3D artesanal: peças de design prontas e sob medida." />
+    <script>
+      // Aplica tema e idioma salvos ANTES do React carregar (evita piscar o tema errado)
+      try {
+        var t = localStorage.getItem("pl_theme");
+        var l = localStorage.getItem("pl_language");
+        if (t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t);
+        if (l === "en-US" || l === "pt-BR") document.documentElement.setAttribute("lang", l);
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>

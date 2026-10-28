@@ -15,6 +15,17 @@
   align-items: center;
   gap: var(--space-5);
   max-width: 900px;
+
+  /* Efeito de scroll: o conteúdo desce um pouco, inclina (skew) e some.
+     --hero-p (0 → 1) é escrita por useHeroFx, sem re-render. */
+  transform-origin: 50% 100%;
+  transform: translate3d(0, calc(var(--hero-p, 0) * 70px), 0)
+    skewY(calc(var(--hero-p, 0) * -2.5deg));
+  opacity: calc(1 - var(--hero-p, 0) * 1.1);
+}
+
+.hero[data-fx-active="true"] .inner {
+  will-change: transform, opacity;
 }
 
 .eyebrow {
@@ -37,11 +48,71 @@
   font-weight: 600;
 }
 
-.titleAccent {
-  background: linear-gradient(180deg, #f0f0f2 0%, #9a9aa3 100%);
+.accentWord {
+  background: linear-gradient(180deg, var(--text-grad-a) 0%, var(--text-grad-b) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+}
+
+/* ---------- Clip-reveal: palavras sobem de uma máscara ---------- */
+.line {
+  display: block;
+}
+
+.word {
+  display: inline-block;
+  overflow: hidden;
+  vertical-align: top;
+  /* folga para não cortar letras com perna (g, p, y) */
+  padding-bottom: 0.14em;
+  margin-bottom: -0.14em;
+}
+
+.wordInner {
+  display: inline-block;
+  transform: translate3d(0, 115%, 0);
+  animation: wordUp 900ms var(--ease-out) forwards;
+  animation-delay: calc(var(--i, 0) * 90ms + 150ms);
+}
+
+.rise {
+  opacity: 0;
+  transform: translate3d(0, 16px, 0);
+  animation: riseIn 800ms var(--ease-out) forwards;
+  animation-delay: var(--d, 0ms);
+}
+
+/* Enquanto a tela de carregamento está visível, as animações esperam */
+:global(html[data-booting="true"]) .wordInner,
+:global(html[data-booting="true"]) .rise {
+  animation-play-state: paused;
+}
+
+@keyframes wordUp {
+  to {
+    transform: none;
+  }
+}
+
+@keyframes riseIn {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wordInner,
+  .rise {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  .inner {
+    transform: none;
+    opacity: 1;
+  }
 }
 
 .subtitle {
@@ -81,7 +152,7 @@
 
 .primaryCta:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 32px rgba(230, 230, 235, 0.2);
+  box-shadow: 0 8px 32px rgb(var(--rgb-accent) / 0.2);
 }
 
 .secondaryCta {

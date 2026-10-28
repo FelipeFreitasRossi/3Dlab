@@ -28,3 +28,9 @@ export const INSTAGRAM_URL = "https://instagram.com/pedralunar.3d";
 
 export const SITE_NAME = "Pedra Lunar";
 export const SITE_TAGLINE = "3D Lab";
+
+// ============================================================
+// ⚠️ DEMONSTRATIVO — Substituir pelo perfil real do TikTok.
+// ============================================================
+export const TIKTOK_HANDLE = "@pedralunar.3d";
+export const TIKTOK_URL = "https://www.tiktok.com/@pedralunar.3d";
