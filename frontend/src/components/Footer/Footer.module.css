@@ -1,0 +1,290 @@
+/* ============================================================
+   FOOTER — base
+   ============================================================ */
+.footer {
+  position: relative;
+  z-index: 1;
+  padding: var(--space-9) var(--container-pad) var(--space-5);
+  padding-bottom: max(var(--space-5), env(safe-area-inset-bottom, 0px));
+  border-top: 1px solid var(--color-border);
+  background: linear-gradient(
+    180deg,
+    transparent 0%,
+    rgba(10, 10, 11, 0.6) 100%
+  );
+  margin-top: var(--space-10);
+}
+
+/* Linha luminosa sutil no topo do footer */
+.footer::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(60%, 400px);
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(220, 225, 240, 0.4),
+    transparent
+  );
+  pointer-events: none;
+}
+
+.inner {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+/* ============================================================
+   BLOCO SUPERIOR — 3 colunas (grid)
+   ============================================================ */
+.top {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-7);
+}
+
+@media (min-width: 700px) {
+  .top {
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: var(--space-6);
+  }
+}
+
+/* ============================================================
+   COLUNA DA MARCA
+   ============================================================ */
+.brandCol {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  max-width: 380px;
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-3);
+  font-size: var(--fs-lg);
+  font-weight: 600;
+  color: var(--color-text);
+  align-self: flex-start;
+  transition: opacity var(--duration-fast) var(--ease-out);
+}
+
+.brand:hover {
+  opacity: 0.85;
+}
+
+.logo {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--color-border-strong);
+  box-shadow: 0 0 20px rgba(220, 225, 240, 0.10);
+  transition:
+    transform var(--duration-base) var(--ease-out),
+    box-shadow var(--duration-base) var(--ease-out);
+}
+
+.brand:hover .logo {
+  transform: scale(1.06);
+  box-shadow: 0 0 28px rgba(220, 225, 240, 0.2);
+}
+
+.tagline {
+  font-size: var(--fs-sm);
+  color: var(--color-text-muted);
+  line-height: var(--lh-base);
+  max-width: 40ch;
+}
+
+/* ============================================================
+   ÍCONES SOCIAIS
+   ============================================================ */
+.socials {
+  display: flex;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+}
+
+.socialLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  color: var(--color-text-muted);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out);
+}
+
+.socialLink:hover {
+  color: var(--color-bg);
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(230, 230, 235, 0.15);
+}
+
+.socialLink:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+/* ============================================================
+   COLUNAS DE NAVEGAÇÃO E CONTATO
+   ============================================================ */
+.col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.colTitle {
+  font-size: var(--fs-xs);
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-text-subtle);
+  margin-bottom: var(--space-2);
+}
+
+.navList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  list-style: none;
+}
+
+.navLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  align-self: flex-start;
+  font-size: var(--fs-sm);
+  color: var(--color-text-muted);
+  transition:
+    color var(--duration-fast) var(--ease-out),
+    gap var(--duration-fast) var(--ease-out);
+}
+
+.navLink svg {
+  opacity: 0;
+  transform: translate(-4px, 4px);
+  transition:
+    opacity var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+}
+
+.navLink:hover {
+  color: var(--color-text);
+}
+
+.navLink:hover svg {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+
+/* ============================================================
+   CONTATO — lista
+   ============================================================ */
+.contactList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  list-style: none;
+}
+
+.contactLink {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  align-self: flex-start;
+  font-size: var(--fs-sm);
+  color: var(--color-text-muted);
+  transition: color var(--duration-fast) var(--ease-out);
+  word-break: break-word;
+}
+
+.contactLink svg {
+  flex-shrink: 0;
+  color: var(--color-text-subtle);
+  transition: color var(--duration-fast) var(--ease-out);
+}
+
+.contactLink:hover {
+  color: var(--color-text);
+}
+
+.contactLink:hover svg {
+  color: var(--color-accent);
+}
+
+.responseNote {
+  font-size: var(--fs-xs);
+  color: var(--color-text-subtle);
+  font-style: italic;
+  margin-top: var(--space-1);
+}
+
+/* ============================================================
+   BLOCO INFERIOR — copyright
+   ============================================================ */
+.bottom {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--color-border);
+  font-size: var(--fs-xs);
+  color: var(--color-text-subtle);
+}
+
+@media (min-width: 640px) {
+  .bottom {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+.madeWith {
+  color: var(--color-text-muted);
+}
+
+/* ============================================================
+   RESPONSIVO FINO
+   ============================================================ */
+@media (max-width: 480px) {
+  .footer {
+    padding-top: var(--space-8);
+  }
+
+  .top {
+    gap: var(--space-6);
+  }
+
+  .brandCol {
+    max-width: 100%;
+  }
+
+  .socialLink {
+    width: 40px;
+    height: 40px;
+  }
+}

@@ -1,0 +1,107 @@
+.hero {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: calc(var(--space-10) + 64px) var(--container-pad) var(--space-9);
+}
+
+.inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-5);
+  max-width: 900px;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  border: 1px solid var(--color-border-strong);
+  border-radius: 999px;
+  font-size: var(--fs-xs);
+  color: var(--color-text-muted);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+}
+
+.title {
+  font-size: var(--fs-5xl);
+  line-height: var(--lh-tight);
+  letter-spacing: -0.03em;
+  font-weight: 600;
+}
+
+.titleAccent {
+  background: linear-gradient(180deg, #f0f0f2 0%, #9a9aa3 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.subtitle {
+  max-width: 52ch;
+  font-size: var(--fs-lg);
+  color: var(--color-text-muted);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-3);
+  margin-top: var(--space-4);
+}
+
+.primaryCta,
+.secondaryCta {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-5);
+  font-size: var(--fs-base);
+  font-weight: 500;
+  border-radius: var(--radius-md);
+  transition:
+    transform var(--duration-fast) var(--ease-out),
+    box-shadow var(--duration-fast) var(--ease-out),
+    background-color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out);
+}
+
+.primaryCta {
+  color: var(--color-bg);
+  background: var(--color-accent);
+}
+
+.primaryCta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(230, 230, 235, 0.2);
+}
+
+.secondaryCta {
+  color: var(--color-text);
+  border: 1px solid var(--color-border-strong);
+}
+
+.secondaryCta:hover {
+  background: var(--color-accent-soft);
+  border-color: var(--color-text-subtle);
+}
+
+@media (max-width: 640px) {
+  .actions {
+    width: 100%;
+    flex-direction: column;
+  }
+  .primaryCta,
+  .secondaryCta {
+    width: 100%;
+    justify-content: center;
+  }
+}
