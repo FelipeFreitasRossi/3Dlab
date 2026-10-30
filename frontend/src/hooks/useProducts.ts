@@ -1,53 +1,57 @@
 import { useEffect, useState } from "react";
-import { PRODUCTS } from "../data/products";
-import { fetchProducts, hasApi } from "../services/api";
 import type { Product } from "../types/product";
+import { fetchProducts } from "../services/api";
+import { PRODUCTS as LOCAL_PRODUCTS } from "../data/products";
 
-const API_TIMEOUT_MS = 6000;
+type Source = "api" | "local";
 
-interface UseProductsResult {
+interface UseProductsState {
   products: Product[];
   loading: boolean;
-  error: Error | null;
-  /** true quando estamos mostrando os dados locais (sem API ou API falhou) */
-  usingFallback: boolean;
+  error: string | null;
+  source: Source;
 }
 
 /**
- * Busca os produtos na API. Se a API não existir ou falhar,
- * usa os dados locais — a tela nunca quebra.
+ * Busca os produtos da API. Se a API falhar, cai para os dados locais
+ * (marcando `source: "local"` para que a UI possa avisar discretamente).
  */
-export function useProducts(): UseProductsResult {
-  const [state, setState] = useState<UseProductsResult>({
-    products: hasApi ? [] : PRODUCTS,
-    loading: hasApi,
+export function useProducts(): UseProductsState {
+  const [state, setState] = useState<UseProductsState>({
+    products: [],
+    loading: true,
     error: null,
-    usingFallback: !hasApi,
+    source: "api",
   });
 
   useEffect(() => {
-    if (!hasApi) return;
-
-    let cancelled = false;
     const controller = new AbortController();
-    const timer = window.setTimeout(() => controller.abort(), API_TIMEOUT_MS);
+    let cancelled = false;
 
-    fetchProducts(controller.signal)
-      .then((products) => {
+    (async () => {
+      try {
+        const products = await fetchProducts(controller.signal);
         if (cancelled) return;
-        setState({ products, loading: false, error: null, usingFallback: false });
-      })
-      .catch((err: unknown) => {
-        if (cancelled) return; // efeito foi desmontado: ignora
-        const error = err instanceof Error ? err : new Error(String(err));
-        console.warn("[Pedra Lunar] API indisponível, usando dados locais:", error.message);
-        setState({ products: PRODUCTS, loading: false, error, usingFallback: true });
-      })
-      .finally(() => window.clearTimeout(timer));
+        setState({ products, loading: false, error: null, source: "api" });
+      } catch (err) {
+        if (cancelled) return;
+        const message =
+          err instanceof Error ? err.message : "Falha ao carregar produtos";
+        console.warn(
+          "[useProducts] API indisponível, usando dados locais:",
+          message,
+        );
+        setState({
+          products: LOCAL_PRODUCTS,
+          loading: false,
+          error: message,
+          source: "local",
+        });
+      }
+    })();
 
     return () => {
       cancelled = true;
-      window.clearTimeout(timer);
       controller.abort();
     };
   }, []);

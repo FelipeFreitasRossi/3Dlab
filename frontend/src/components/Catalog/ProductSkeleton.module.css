@@ -8,7 +8,6 @@
   overflow: hidden;
 }
 
-/* Brilho que passa por cima — só transform (GPU) */
 .block {
   position: relative;
   overflow: hidden;
