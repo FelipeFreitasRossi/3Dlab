@@ -1,8 +1,6 @@
 import { ArrowUpRight, Mail } from "lucide-react";
 import {
-  INSTAGRAM_HANDLE,
   INSTAGRAM_URL,
-  TIKTOK_HANDLE,
   TIKTOK_URL,
   buildWhatsAppUrl,
 } from "../../data/site";
@@ -10,17 +8,17 @@ import { usePreferences } from "../../context/usePreferences";
 import { InstagramIcon, TikTokIcon, WhatsAppIcon } from "../BrandIcons";
 import styles from "./Footer.module.css";
 
-const NAV_LINKS = [
+const NAV_KEYS = [
   { href: "#inicio", key: "nav.home" },
   { href: "#catalogo", key: "nav.catalog" },
   { href: "#sobre", key: "nav.about" },
   { href: "#contato", key: "nav.contact" },
-];
+] as const;
 
 export function Footer() {
   const { t } = usePreferences();
   const year = new Date().getFullYear();
-  const whatsappUrl = buildWhatsAppUrl(t("whatsapp.defaultMessage"));
+  const copyright = t("footer.copyright").replace("{year}", String(year));
 
   return (
     <footer className={styles.footer}>
@@ -29,8 +27,8 @@ export function Footer() {
           <div className={styles.brandCol}>
             <a href="#inicio" className={styles.brand}>
               <img
-                src="https://i.postimg.cc/KYFJDsWs/Pedra-Lunar.jpg"
-                alt={t("nav.logoAlt")}
+                src="/logo.jpg"
+                alt="Pedra Lunar"
                 className={styles.logo}
                 width={40}
                 height={40}
@@ -47,35 +45,35 @@ export function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.socialLink}
-                aria-label={t("footer.openInstagram")}
+                aria-label={t("footer.instagram.aria")}
               >
-                <InstagramIcon size={20} colored />
-              </a>
-              <a
-                href={whatsappUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.socialLink}
-                aria-label={t("footer.openWhatsapp")}
-              >
-                <WhatsAppIcon size={20} colored />
+                <InstagramIcon size={18} />
               </a>
               <a
                 href={TIKTOK_URL}
                 target="_blank"
                 rel="noopener noreferrer"
                 className={styles.socialLink}
-                aria-label={t("footer.openTiktok")}
+                aria-label={t("footer.tiktok.aria")}
               >
                 <TikTokIcon size={18} />
+              </a>
+              <a
+                href={buildWhatsAppUrl()}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.socialLink}
+                aria-label={t("footer.whatsapp.aria")}
+              >
+                <WhatsAppIcon size={18} />
               </a>
             </div>
           </div>
 
           <div className={styles.col}>
-            <h4 className={styles.colTitle}>{t("footer.navigate")}</h4>
-            <nav className={styles.navList} aria-label={t("footer.navLabel")}>
-              {NAV_LINKS.map((link) => (
+            <h4 className={styles.colTitle}>{t("footer.navTitle")}</h4>
+            <nav className={styles.navList}>
+              {NAV_KEYS.map((link) => (
                 <a key={link.href} href={link.href} className={styles.navLink}>
                   {t(link.key)}
                   <ArrowUpRight size={12} aria-hidden="true" />
@@ -85,17 +83,17 @@ export function Footer() {
           </div>
 
           <div className={styles.col}>
-            <h4 className={styles.colTitle}>{t("footer.contact")}</h4>
+            <h4 className={styles.colTitle}>{t("footer.contactTitle")}</h4>
             <ul className={styles.contactList}>
               <li>
                 <a
-                  href={whatsappUrl}
+                  href={buildWhatsAppUrl()}
                   target="_blank"
                   rel="noopener noreferrer"
                   className={styles.contactLink}
                 >
                   <WhatsAppIcon size={16} />
-                  {t("contact.cta")}
+                  {t("footer.whatsapp")}
                 </a>
               </li>
               <li>
@@ -106,18 +104,7 @@ export function Footer() {
                   className={styles.contactLink}
                 >
                   <InstagramIcon size={16} />
-                  {INSTAGRAM_HANDLE}
-                </a>
-              </li>
-              <li>
-                <a
-                  href={TIKTOK_URL}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.contactLink}
-                >
-                  <TikTokIcon size={16} />
-                  {TIKTOK_HANDLE}
+                  Instagram
                 </a>
               </li>
               <li>
@@ -135,9 +122,7 @@ export function Footer() {
         </div>
 
         <div className={styles.bottom}>
-          <p>
-            © {year} Pedra Lunar — 3D Lab. {t("footer.rights")}
-          </p>
+          <p>{copyright}</p>
         </div>
       </div>
     </footer>

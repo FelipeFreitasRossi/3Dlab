@@ -1,14 +1,5 @@
 import type { Product } from "../types/product";
 
-// ============================================================
-// ⚠️ DEMONSTRATIVO — Todos os produtos, preços, prazos e imagens
-// abaixo são fictícios. Substituir pelos dados reais da loja.
-//
-// As imagens usam picsum.photos (fotos aleatórias estáveis por seed)
-// APENAS para demonstrar a galeria. Quando o cliente enviar fotos reais:
-//   1. Coloque os arquivos em `frontend/public/products/`
-//   2. Troque as URLs por `"/products/nome-1.jpg"`, etc.
-// ============================================================
 export const PRODUCTS: Product[] = [
   {
     id: "vaso-orbita",

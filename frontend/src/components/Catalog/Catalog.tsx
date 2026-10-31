@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import { AlertCircle, Loader2, Search, SlidersHorizontal } from "lucide-react";
+import { usePreferences } from "../../context/usePreferences";
 import { useProducts } from "../../hooks/useProducts";
 import { PRODUCT_CATEGORIES } from "../../types/product";
 import type { CategoryFilter, Product } from "../../types/product";
@@ -8,11 +9,6 @@ import { ProductCard } from "./ProductCard";
 import { ProductModal } from "./ProductModal";
 import styles from "./Catalog.module.css";
 
-const ALL_FILTERS: { id: CategoryFilter; label: string }[] = [
-  { id: "todos", label: "Todos" },
-  ...PRODUCT_CATEGORIES.map((c) => ({ id: c.id, label: c.label })),
-];
-
 const MODAL_EXIT_MS = 220;
 
 function CardSkeleton() {
@@ -20,6 +16,7 @@ function CardSkeleton() {
 }
 
 export function Catalog() {
+  const { t } = usePreferences();
   const [activeCategory, setActiveCategory] =
     useState<CategoryFilter>("todos");
   const [query, setQuery] = useState("");
@@ -29,6 +26,14 @@ export function Catalog() {
   const closingRef = useRef(false);
 
   const { products, loading, error, source } = useProducts();
+
+  const filters: { id: CategoryFilter; label: string }[] = [
+    { id: "todos", label: t("catalog.filter.all") },
+    ...PRODUCT_CATEGORIES.map((c) => ({
+      id: c.id,
+      label: t(`catalog.filter.${c.id}`),
+    })),
+  ];
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -53,7 +58,6 @@ export function Catalog() {
     if (closingRef.current) return;
     closingRef.current = true;
     setModalClosing(true);
-
     window.setTimeout(() => {
       setSelectedProduct(null);
       setModalClosing(false);
@@ -66,12 +70,9 @@ export function Catalog() {
       <div className={styles.inner}>
         <Reveal>
           <div className={styles.header}>
-            <p className={styles.eyebrow}>Catálogo</p>
-            <h2 className={styles.title}>Peças prontas e sob medida.</h2>
-            <p className={styles.subtitle}>
-              Cada peça pode ser personalizada — o contato direto pelo
-              WhatsApp define cor, acabamento e prazo.
-            </p>
+            <p className={styles.eyebrow}>{t("catalog.eyebrow")}</p>
+            <h2 className={styles.title}>{t("catalog.title")}</h2>
+            <p className={styles.subtitle}>{t("catalog.subtitle")}</p>
           </div>
         </Reveal>
 
@@ -87,23 +88,23 @@ export function Catalog() {
                 type="search"
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
-                placeholder="Buscar por nome ou descrição..."
+                placeholder={t("catalog.search.placeholder")}
                 className={styles.searchInput}
-                aria-label="Buscar produtos"
+                aria-label={t("catalog.search.label")}
               />
             </div>
 
             <div
               className={styles.filters}
               role="group"
-              aria-label="Filtrar por categoria"
+              aria-label={t("catalog.filters.label")}
             >
               <SlidersHorizontal
                 size={16}
                 className={styles.filtersIcon}
                 aria-hidden="true"
               />
-              {ALL_FILTERS.map((filter) => (
+              {filters.map((filter) => (
                 <button
                   key={filter.id}
                   type="button"
@@ -120,16 +121,19 @@ export function Catalog() {
           </div>
         </Reveal>
 
-        {/* Aviso discreto se estamos com fallback local */}
         {source === "local" && error && (
           <div className={styles.notice} role="status">
             <AlertCircle size={14} aria-hidden="true" />
-            Exibindo produtos de demonstração — API indisponível no momento.
+            {t("catalog.fallback.notice")}
           </div>
         )}
 
         {loading ? (
-          <div className={styles.grid} aria-busy="true" aria-label="Carregando produtos">
+          <div
+            className={styles.grid}
+            aria-busy="true"
+            aria-label={t("catalog.loading")}
+          >
             {Array.from({ length: 6 }).map((_, i) => (
               <CardSkeleton key={i} />
             ))}
@@ -137,7 +141,7 @@ export function Catalog() {
         ) : filtered.length === 0 ? (
           <Reveal>
             <div className={styles.empty}>
-              <p>Nenhum produto encontrado para essa combinação.</p>
+              <p>{t("catalog.empty.message")}</p>
               <button
                 type="button"
                 onClick={() => {
@@ -146,7 +150,7 @@ export function Catalog() {
                 }}
                 className={styles.clearButton}
               >
-                Limpar filtros
+                {t("catalog.empty.clear")}
               </button>
             </div>
           </Reveal>
@@ -167,7 +171,7 @@ export function Catalog() {
         {loading && (
           <p className={styles.loadingRow}>
             <Loader2 size={14} className={styles.spinner} aria-hidden="true" />
-            Carregando catálogo...
+            {t("catalog.loading")}
           </p>
         )}
       </div>

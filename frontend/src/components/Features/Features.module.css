@@ -86,7 +86,6 @@
   font-size: var(--fs-sm);
   color: var(--color-text-muted);
 }
-/* ============ Parallax (efeitos de scroll) ============ */
 .layerHeader {
   transform: translate3d(0, calc(var(--sp, 0) * -26px), 0);
 }

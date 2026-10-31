@@ -1,7 +1,7 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import App from "./App";
-import { PreferencesProvider } from "./context/PreferencesProvider";
+import { PreferencesProvider } from "./context/PreferencesContext";
 import "./styles/globals.css";
 
 createRoot(document.getElementById("root")!).render(

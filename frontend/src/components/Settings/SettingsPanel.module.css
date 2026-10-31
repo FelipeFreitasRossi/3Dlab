@@ -1,194 +1,144 @@
 .overlay {
   position: fixed;
   inset: 0;
-  z-index: var(--z-overlay);
+  z-index: 200;
   display: flex;
   justify-content: flex-end;
-  background: rgb(var(--rgb-overlay) / 0.55);
-  -webkit-backdrop-filter: blur(4px);
-  backdrop-filter: blur(4px);
-  animation: overlayIn var(--duration-base) var(--ease-out) both;
+  background: rgba(5, 5, 7, 0.72);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  animation: fadeIn 220ms ease-out;
 }
 
-.overlayClosing {
-  animation: overlayOut 260ms var(--ease-out) both;
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .panel {
+  width: 100%;
+  max-width: 380px;
+  height: 100%;
+  background: var(--color-bg-elevated, #101013);
+  border-left: 1px solid var(--color-border, rgba(255, 255, 255, 0.08));
   display: flex;
   flex-direction: column;
-  width: min(400px, 100%);
-  height: 100%;
-  background: var(--color-bg-elevated);
-  border-left: 1px solid var(--color-border-strong);
-  box-shadow: -24px 0 80px rgb(var(--rgb-shadow) / 0.35);
-  padding-bottom: env(safe-area-inset-bottom);
-  animation: panelIn 380ms var(--ease-out) both;
+  gap: 24px;
+  padding: 24px;
+  overflow-y: auto;
+  animation: slideIn 280ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.panelClosing {
-  animation: panelOut 260ms var(--ease-in-out) both;
+@keyframes slideIn {
+  from { transform: translateX(100%); }
+  to { transform: translateX(0); }
 }
 
-.top {
+.header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--space-5);
-  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--color-border, rgba(255, 255, 255, 0.08));
 }
 
 .title {
-  font-size: var(--fs-xl);
+  font-size: 18px;
+  font-weight: 600;
 }
 
-.closeButton {
-  display: grid;
-  place-items: center;
-  width: 40px;
-  height: 40px;
-  border: 1px solid var(--color-border);
-  border-radius: 50%;
-  background: transparent;
-  color: var(--color-text);
-  cursor: pointer;
-  transition:
-    background-color var(--duration-fast) var(--ease-out),
-    border-color var(--duration-fast) var(--ease-out);
-}
-
-.closeButton:hover {
-  background: var(--color-accent-soft);
-  border-color: var(--color-border-strong);
-}
-
-.body {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-6);
-  padding: var(--space-5);
-  overflow-y: auto;
-}
-
-.group {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-3);
-}
-
-.groupTitle {
-  font-size: var(--fs-xs);
-  font-weight: 500;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: var(--color-text-subtle);
-}
-
-.options {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-2);
-}
-
-.option {
+.closeBtn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: var(--space-2);
-  min-height: 48px;
-  padding: var(--space-2) var(--space-3);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background: var(--color-surface);
-  color: var(--color-text-muted);
-  font-size: var(--fs-sm);
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  color: var(--color-text-muted, #9a9aa3);
+  background: transparent;
+  border: 1px solid var(--color-border, rgba(255, 255, 255, 0.08));
+  border-radius: 8px;
   cursor: pointer;
-  transition:
-    color var(--duration-fast) var(--ease-out),
-    background-color var(--duration-fast) var(--ease-out),
-    border-color var(--duration-fast) var(--ease-out);
+  transition: color 160ms ease-out, border-color 160ms ease-out;
+}
+
+.closeBtn:hover {
+  color: var(--color-text, #f0f0f2);
+  border-color: rgba(255, 255, 255, 0.16);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--color-text-muted, #9a9aa3);
+}
+
+.sectionHeader h3 {
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 12px 16px;
+  font-size: 14px;
+  color: var(--color-text, #f0f0f2);
+  background: var(--color-surface, #16161a);
+  border: 1px solid var(--color-border, rgba(255, 255, 255, 0.08));
+  border-radius: 8px;
+  cursor: pointer;
+  transition: border-color 160ms ease-out, background-color 160ms ease-out;
 }
 
 .option:hover {
-  color: var(--color-text);
-  border-color: var(--color-border-strong);
+  border-color: rgba(255, 255, 255, 0.16);
+  background: var(--color-surface-hover, #1c1c22);
 }
 
-.optionActive,
-.optionActive:hover {
-  color: var(--color-text);
-  border-color: var(--color-accent);
-  background: var(--color-accent-soft);
+.optionActive {
+  border-color: var(--color-accent, #e6e6eb);
+  background: rgba(230, 230, 235, 0.08);
 }
 
 .socials {
   display: flex;
-  gap: var(--space-3);
+  gap: 8px;
+  margin-top: auto;
+  padding-top: 16px;
+  border-top: 1px solid var(--color-border, rgba(255, 255, 255, 0.08));
 }
 
 .socialLink {
-  display: grid;
-  place-items: center;
-  width: 48px;
-  height: 48px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
-  background: var(--color-surface);
-  color: var(--color-text);
-  transition:
-    transform var(--duration-fast) var(--ease-out),
-    border-color var(--duration-fast) var(--ease-out);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  color: var(--color-text-muted, #9a9aa3);
+  background: var(--color-surface, #16161a);
+  border: 1px solid var(--color-border, rgba(255, 255, 255, 0.08));
+  border-radius: 50%;
+  transition: color 160ms ease-out, border-color 160ms ease-out;
 }
 
 .socialLink:hover {
-  transform: translateY(-2px);
-  border-color: var(--color-border-strong);
-}
-
-@keyframes panelIn {
-  from {
-    transform: translate3d(100%, 0, 0);
-  }
-  to {
-    transform: none;
-  }
-}
-
-@keyframes panelOut {
-  from {
-    transform: none;
-  }
-  to {
-    transform: translate3d(100%, 0, 0);
-  }
-}
-
-@keyframes overlayIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes overlayOut {
-  from {
-    opacity: 1;
-  }
-  to {
-    opacity: 0;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .overlay,
-  .overlayClosing,
-  .panel,
-  .panelClosing {
-    animation: none;
-  }
-  .overlayClosing {
-    opacity: 0;
-  }
+  color: var(--color-text, #f0f0f2);
+  border-color: rgba(255, 255, 255, 0.16);
 }

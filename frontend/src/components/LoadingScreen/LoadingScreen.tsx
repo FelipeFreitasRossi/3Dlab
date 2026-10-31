@@ -3,69 +3,64 @@ import { usePreferences } from "../../context/usePreferences";
 import styles from "./LoadingScreen.module.css";
 
 interface LoadingScreenProps {
-  /** Tempo mínimo na tela, em ms (mesmo que tudo carregue rápido). */
-  minDuration?: number;
-  /** Chamado quando a animação de saída COMEÇA (libera o scroll e as animações do site). */
-  onExitStart?: () => void;
-  /** Chamado quando a animação de saída TERMINA (o App pode remover o componente). */
-  onDone: () => void;
+  onComplete?: () => void;
 }
 
-const EXIT_MS = 700;
+const MIN_DURATION = 900;
+const FADE_DURATION = 400;
+const SAFETY_TIMEOUT = 4000;
 
-export function LoadingScreen({
-  minDuration = 900,
-  onExitStart,
-  onDone,
-}: LoadingScreenProps) {
+export function LoadingScreen({ onComplete }: LoadingScreenProps) {
   const { t } = usePreferences();
-  const [exiting, setExiting] = useState(false);
-
-  // Guardamos as funções em refs para o timer não reiniciar se o pai re-renderizar
-  const exitStartRef = useRef(onExitStart);
-  const doneRef = useRef(onDone);
-  useEffect(() => {
-    exitStartRef.current = onExitStart;
-    doneRef.current = onDone;
-  });
+  const [leaving, setLeaving] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const completedRef = useRef(false);
 
   useEffect(() => {
-    let doneTimer = 0;
-    const exitTimer = window.setTimeout(() => {
-      setExiting(true);
-      exitStartRef.current?.();
-      doneTimer = window.setTimeout(() => doneRef.current(), EXIT_MS);
-    }, minDuration);
+    document.body.style.overflow = "hidden";
+
+    const finish = () => {
+      if (completedRef.current) return;
+      completedRef.current = true;
+      document.body.style.overflow = "";
+      if (rootRef.current) {
+        rootRef.current.style.display = "none";
+        rootRef.current.style.pointerEvents = "none";
+      }
+      onComplete?.();
+    };
+
+    const fadeTimer = window.setTimeout(() => {
+      setLeaving(true);
+      window.setTimeout(finish, FADE_DURATION);
+    }, MIN_DURATION);
+
+    const safetyTimer = window.setTimeout(finish, SAFETY_TIMEOUT);
 
     return () => {
-      window.clearTimeout(exitTimer);
-      window.clearTimeout(doneTimer);
+      window.clearTimeout(fadeTimer);
+      window.clearTimeout(safetyTimer);
+      document.body.style.overflow = "";
     };
-  }, [minDuration]);
+  }, [onComplete]);
 
   return (
     <div
-      className={`${styles.overlay} ${exiting ? styles.exiting : ""}`}
-      role="status"
-      aria-live="polite"
-      aria-label={t("loading.label")}
+      ref={rootRef}
+      className={`${styles.root} ${leaving ? styles.leaving : ""}`}
+      style={{ pointerEvents: leaving ? "none" : "auto" }}
     >
-      <div className={styles.grid} aria-hidden="true" />
-
-      <div className={styles.center} aria-hidden="true">
-        <div className={styles.moon}>
-          <span className={styles.moonCore} />
-          <span className={styles.moonRing} />
-          <span className={`${styles.moonRing} ${styles.moonRingDelayed}`} />
-        </div>
-
-        <p className={styles.brand}>
-          <span className={styles.brandName}>PEDRA LUNAR</span>
-          <span className={styles.brandTag}>3D LAB</span>
-        </p>
-
-        <div className={styles.bar}>
-          <span className={styles.barFill} />
+      <div className={styles.center}>
+        <img
+          src="/logo.jpg"
+          alt=""
+          className={styles.logo}
+          width={72}
+          height={72}
+        />
+        <p className={styles.text}>{t("loading.message")}</p>
+        <div className={styles.progress} aria-hidden="true">
+          <span className={styles.progressBar} />
         </div>
       </div>
     </div>

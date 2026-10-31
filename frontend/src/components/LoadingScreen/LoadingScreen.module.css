@@ -1,198 +1,59 @@
-.overlay {
+.root {
   position: fixed;
   inset: 0;
-  z-index: var(--z-loading);
-  display: grid;
-  place-items: center;
-  background: var(--color-bg);
-  overflow: hidden;
-  opacity: 1;
-  transform: scale(1);
-  transition:
-    opacity 600ms var(--ease-out),
-    transform 700ms var(--ease-out);
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg, #0a0a0b);
+  transition: opacity 400ms ease-out;
 }
 
-/* Saída: fade + leve scale. É um elemento fixo, então não gera layout shift. */
-.exiting {
+.leaving {
   opacity: 0;
-  transform: scale(1.06);
   pointer-events: none;
 }
 
-/* Grade que "desliza" devagar, com o mesmo degradê do fundo do site */
-.grid {
-  position: absolute;
-  inset: -64px;
-  background-image:
-    linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
-    linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
-  background-size: var(--grid-size) var(--grid-size);
-  -webkit-mask-image: radial-gradient(
-    ellipse 60% 55% at 50% 50%,
-    #000 0%,
-    transparent 100%
-  );
-  mask-image: radial-gradient(ellipse 60% 55% at 50% 50%, #000 0%, transparent 100%);
-  animation: gridDrift 6s linear infinite;
-}
-
 .center {
-  position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: var(--space-6);
+  gap: 16px;
 }
 
-/* ---------- Lua pulsando ---------- */
-.moon {
-  position: relative;
-  width: 96px;
-  height: 96px;
-  display: grid;
-  place-items: center;
-}
-
-.moonCore {
-  width: 44px;
-  height: 44px;
+.logo {
+  width: 72px;
+  height: 72px;
   border-radius: 50%;
-  background: radial-gradient(
-    circle at 35% 30%,
-    var(--color-text) 0%,
-    var(--color-text-muted) 70%,
-    var(--color-text-subtle) 100%
-  );
-  box-shadow: 0 0 40px rgb(var(--rgb-glow) / 0.45);
-  animation: moonPulse 1.8s var(--ease-in-out) infinite;
+  object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 0 40px rgba(220, 225, 240, 0.18);
 }
 
-.moonRing {
-  position: absolute;
-  inset: 0;
-  border: 1px solid var(--color-border-strong);
-  border-radius: 50%;
-  opacity: 0;
-  animation: ringOut 2.4s var(--ease-out) infinite;
+.text {
+  font-size: 14px;
+  color: var(--color-text-muted, #9a9aa3);
+  letter-spacing: 0.03em;
 }
 
-.moonRingDelayed {
-  animation-delay: 1.2s;
-}
-
-/* ---------- Marca ---------- */
-.brand {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--space-1);
-  color: var(--color-text);
-  animation: fadeUp 700ms var(--ease-out) both;
-  animation-delay: 150ms;
-}
-
-.brandName {
-  font-size: var(--fs-xl);
-  font-weight: 600;
-  letter-spacing: 0.32em;
-  padding-left: 0.32em; /* compensa o espaço do último caractere */
-}
-
-.brandTag {
-  font-family: var(--font-mono);
-  font-size: var(--fs-xs);
-  letter-spacing: 0.4em;
-  padding-left: 0.4em;
-  color: var(--color-text-subtle);
-}
-
-/* ---------- Linha de progresso ---------- */
-.bar {
-  position: relative;
-  width: 140px;
-  height: 1px;
+.progress {
+  width: 120px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 2px;
   overflow: hidden;
-  background: var(--color-border);
 }
 
-.barFill {
-  position: absolute;
-  inset: 0;
-  width: 45%;
-  background: linear-gradient(
-    90deg,
-    transparent,
-    var(--color-text),
-    transparent
-  );
-  animation: sweep 1.4s var(--ease-in-out) infinite;
+.progressBar {
+  display: block;
+  height: 100%;
+  width: 40%;
+  background: var(--color-accent, #e6e6eb);
+  border-radius: 2px;
+  animation: indeterminate 1.2s ease-in-out infinite;
 }
 
-@keyframes gridDrift {
-  to {
-    transform: translate3d(var(--grid-size), var(--grid-size), 0);
-  }
-}
-
-@keyframes moonPulse {
-  0%,
-  100% {
-    transform: scale(0.92);
-    opacity: 0.85;
-  }
-  50% {
-    transform: scale(1.08);
-    opacity: 1;
-  }
-}
-
-@keyframes ringOut {
-  0% {
-    transform: scale(0.5);
-    opacity: 0.7;
-  }
-  100% {
-    transform: scale(1.5);
-    opacity: 0;
-  }
-}
-
-@keyframes sweep {
-  from {
-    transform: translate3d(-100%, 0, 0);
-  }
-  to {
-    transform: translate3d(230%, 0, 0);
-  }
-}
-
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translate3d(0, 10px, 0);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .grid,
-  .moonCore,
-  .moonRing,
-  .barFill,
-  .brand {
-    animation: none;
-  }
-  .brand {
-    opacity: 1;
-  }
-  .barFill {
-    width: 100%;
-  }
-  .exiting {
-    transform: none;
-  }
+@keyframes indeterminate {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(350%); }
 }

@@ -2,7 +2,7 @@
   position: fixed;
   right: max(16px, env(safe-area-inset-right));
   bottom: max(16px, env(safe-area-inset-bottom));
-  z-index: var(--z-float); /* acima do conteúdo e do header, abaixo do modal */
+  z-index: var(--z-float);
   display: grid;
   place-items: center;
   width: 56px;
@@ -14,7 +14,6 @@
     0 8px 24px rgb(var(--rgb-shadow) / 0.35),
     0 0 0 1px rgb(255 255 255 / 0.08) inset;
 
-  /* estado inicial: escondido (pop-in acontece quando recebe .visible) */
   opacity: 0;
   transform: scale(0.4);
   pointer-events: none;
@@ -43,14 +42,12 @@
   border-radius: 50%;
 }
 
-/* Some enquanto o modal de produto está aberto */
 :global(html[data-modal-open="true"]) .float.visible {
   opacity: 0;
   transform: scale(0.6);
   pointer-events: none;
 }
 
-/* ---------- Tooltip: sobe acima do botão ---------- */
 .tooltip {
   position: absolute;
   right: 0;

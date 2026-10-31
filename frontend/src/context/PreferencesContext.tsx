@@ -1,85 +1,83 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
-import type { ReactNode } from "react";
-import { DEFAULT_LANGUAGE, translations } from "../i18n/translations";
-import type { Language } from "../i18n/translations";
-import { PreferencesContext } from "./preferencesStore";
-import type { PreferencesValue, Theme } from "./preferencesStore";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
+import { translations, type Language } from "../i18n/translations";
 
-const LANGUAGE_KEY = "pl_language";
+export type Theme = "dark" | "light";
+
+interface PreferencesContextValue {
+  language: Language;
+  theme: Theme;
+  setLanguage: (lang: Language) => void;
+  setTheme: (theme: Theme) => void;
+  t: (key: string) => string;
+}
+
+const PreferencesContext = createContext<PreferencesContextValue | undefined>(
+  undefined,
+);
+
+const LANG_KEY = "pl_language";
 const THEME_KEY = "pl_theme";
 
-function readStorage(key: string): string | null {
-  try {
-    return window.localStorage.getItem(key);
-  } catch {
-    return null; // navegação privada / storage bloqueado
-  }
+function readStoredLanguage(): Language {
+  if (typeof window === "undefined") return "pt-BR";
+  const stored = window.localStorage.getItem(LANG_KEY);
+  return stored === "en-US" ? "en-US" : "pt-BR";
 }
 
-function writeStorage(key: string, value: string) {
-  try {
-    window.localStorage.setItem(key, value);
-  } catch {
-    /* sem problema: a preferência só não será lembrada */
-  }
-}
-
-function initialLanguage(): Language {
-  const saved = readStorage(LANGUAGE_KEY);
-  return saved === "en-US" || saved === "pt-BR" ? saved : DEFAULT_LANGUAGE;
-}
-
-function initialTheme(): Theme {
-  return readStorage(THEME_KEY) === "light" ? "light" : "dark";
-}
-
-function lookup(source: unknown, key: string): string | undefined {
-  let current: unknown = source;
-  for (const part of key.split(".")) {
-    if (current === null || typeof current !== "object") return undefined;
-    current = (current as Record<string, unknown>)[part];
-  }
-  return typeof current === "string" ? current : undefined;
+function readStoredTheme(): Theme {
+  if (typeof window === "undefined") return "dark";
+  const stored = window.localStorage.getItem(THEME_KEY);
+  return stored === "light" ? "light" : "dark";
 }
 
 export function PreferencesProvider({ children }: { children: ReactNode }) {
-  const [language, setLanguageState] = useState<Language>(initialLanguage);
-  const [theme, setThemeState] = useState<Theme>(initialTheme);
+  const [language, setLanguageState] = useState<Language>(readStoredLanguage);
+  const [theme, setThemeState] = useState<Theme>(readStoredTheme);
 
-  // Mantém <html data-theme> e <html lang> sempre em sincronia
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
+    document.documentElement.style.colorScheme = theme;
   }, [theme]);
 
   useEffect(() => {
     document.documentElement.setAttribute("lang", language);
   }, [language]);
 
-  const setLanguage = useCallback((next: Language) => {
-    setLanguageState(next);
-    writeStorage(LANGUAGE_KEY, next);
+  const setLanguage = useCallback((lang: Language) => {
+    setLanguageState(lang);
+    try {
+      window.localStorage.setItem(LANG_KEY, lang);
+    } catch {
+      /* */
+    }
   }, []);
 
   const setTheme = useCallback((next: Theme) => {
     setThemeState(next);
-    writeStorage(THEME_KEY, next);
+    try {
+      window.localStorage.setItem(THEME_KEY, next);
+    } catch {
+      /* */
+    }
   }, []);
 
-  const t = useCallback<PreferencesValue["t"]>(
-    (key, vars) => {
-      const text =
-        lookup(translations[language], key) ??
-        lookup(translations[DEFAULT_LANGUAGE], key) ??
-        key;
-      if (!vars) return text;
-      return text.replace(/\{(\w+)\}/g, (_, name: string) =>
-        name in vars ? String(vars[name]) : `{${name}}`,
-      );
+  const t = useCallback(
+    (key: string): string => {
+      const dict = translations[language] as Record<string, string> | undefined;
+      return dict?.[key] ?? key;
     },
     [language],
   );
 
-  const value = useMemo<PreferencesValue>(
+  const value = useMemo(
     () => ({ language, theme, setLanguage, setTheme, t }),
     [language, theme, setLanguage, setTheme, t],
   );
@@ -89,4 +87,12 @@ export function PreferencesProvider({ children }: { children: ReactNode }) {
       {children}
     </PreferencesContext.Provider>
   );
+}
+
+export function usePreferences(): PreferencesContextValue {
+  const ctx = useContext(PreferencesContext);
+  if (!ctx) {
+    throw new Error("usePreferences must be used within PreferencesProvider");
+  }
+  return ctx;
 }

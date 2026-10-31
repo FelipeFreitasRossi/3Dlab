@@ -1,0 +1,44 @@
+# === Node / Frontend ===
+node_modules/
+dist/
+dist-ssr/
+*.local
+.vite/
+.vite-temp/
+
+# === Python / Backend ===
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+env/
+ENV/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# === Environment / Secrets ===
+.env
+.env.*
+!.env.example
+
+# === Logs ===
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# === Editor / OS ===
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# === Build / Temp ===
+*.tsbuildinfo
+.cache/
+coverage/

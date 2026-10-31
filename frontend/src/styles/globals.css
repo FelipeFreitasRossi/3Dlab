@@ -1,7 +1,7 @@
 @import "./tokens.css";
 
 /* ============================================================
-   RESET
+   RESET / BASE
    ============================================================ */
 *,
 *::before,
@@ -19,17 +19,27 @@ html {
   -webkit-text-size-adjust: 100%;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+  height: auto !important;
 }
 
 body {
+  position: relative;
   min-height: 100vh;
   font-family: var(--font-sans);
   font-size: var(--fs-base);
   line-height: var(--lh-base);
   color: var(--color-text);
   background: var(--color-bg);
-  overflow-x: hidden;
-  position: relative;
+  overflow-x: hidden !important;
+  overflow-y: auto !important;
+}
+
+#root {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
 
 img,
@@ -59,25 +69,19 @@ ol {
 }
 
 /* ============================================================
-   GRID DE FUNDO COM DEGRADÊ — requisito principal do cliente
-   Duas camadas fixas em body::before:
-     1. linhas da grid (repeating linear-gradients)
-     2. máscara radial que apaga as linhas nas bordas
+   GRID DE FUNDO
    ============================================================ */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
-  z-index: var(--z-bg);
+  z-index: -1;
   pointer-events: none;
-
   background-image:
     linear-gradient(to right, var(--grid-line) 1px, transparent 1px),
     linear-gradient(to bottom, var(--grid-line) 1px, transparent 1px);
   background-size: var(--grid-size) var(--grid-size);
   background-position: center center;
-
-  /* Máscara radial — fade suave nas bordas */
   -webkit-mask-image: radial-gradient(
     ellipse var(--grid-fade-radius-x) var(--grid-fade-radius-y) at 50% 30%,
     rgba(0, 0, 0, 1) 0%,
@@ -96,7 +100,7 @@ body::after {
   content: "";
   position: fixed;
   inset: 0;
-  z-index: var(--z-bg);
+  z-index: -1;
   pointer-events: none;
   opacity: 0.035;
   background-image:
@@ -128,7 +132,6 @@ p {
   color: var(--color-text);
 }
 
-/* Foco acessível visível */
 :focus-visible {
   outline: 2px solid var(--color-accent);
   outline-offset: 3px;
@@ -136,28 +139,11 @@ p {
 }
 
 /* ============================================================
-   PREFERS-REDUCED-MOTION
-   Quem pediu menos movimento não recebe animações decorativas.
-   ============================================================ */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-
-/* ============================================================
-   REVEAL — entrada com direção (up/down/left/right) via CSS variables.
-   Só transform + opacity (GPU). Veja components/Reveal/Reveal.tsx
+   SCROLL REVEAL
    ============================================================ */
 .reveal {
   opacity: 0;
-  transform: translate3d(var(--reveal-x, 0px), var(--reveal-y, 24px), 0)
-    scale(var(--reveal-s, 1));
+  transform: translateY(24px);
   transition:
     opacity var(--duration-slow) var(--ease-out),
     transform var(--duration-slow) var(--ease-out);
@@ -166,47 +152,33 @@ p {
 
 .reveal--visible {
   opacity: 1;
-  transform: none;
+  transform: translateY(0);
   will-change: auto;
 }
 
-/* Transição entre seções: a seção "respira" conforme passa pela tela.
-   --sp / --sp-abs são escritas por useSectionFx (sem re-render). */
-.fx-fade {
-  opacity: clamp(0.25, calc(1.35 - var(--sp-abs, 0) * 1.1), 1);
-  transform: translate3d(0, calc(var(--sp, 0) * 28px), 0);
+/* ============================================================
+   REDE DE SEGURANÇA
+   ============================================================ */
+[aria-hidden="true"] {
+  pointer-events: none;
 }
 
-[data-fx-active="true"] .fx-fade {
-  will-change: transform, opacity;
-}
-
+/* ============================================================
+   PREFERS-REDUCED-MOTION
+   ============================================================ */
 @media (prefers-reduced-motion: reduce) {
   .reveal {
     opacity: 1;
     transform: none;
     transition: none;
   }
-  .fx-fade {
-    opacity: 1;
-    transform: none;
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
-}
-
-/* Durante a tela de carregamento o scroll fica travado */
-html[data-booting="true"] {
-  overflow: hidden;
-}
-
-/* Textura de ruído sutil — SVG inline, custo quase zero */
-body::after {
-  content: "";
-  position: fixed;
-  inset: 0;
-  z-index: 0;
-  pointer-events: none;
-  opacity: 0.035;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-  background-repeat: repeat;
-  background-size: 256px 256px;
 }

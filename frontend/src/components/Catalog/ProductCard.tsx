@@ -1,41 +1,41 @@
-import { useMemo } from "react";
 import type { CSSProperties } from "react";
 import { ArrowUpRight, Clock } from "lucide-react";
 import { buildWhatsAppUrl } from "../../data/site";
 import { usePreferences } from "../../context/usePreferences";
-import { useTilt } from "../../hooks/useTilt";
-import { WhatsAppIcon } from "../BrandIcons";
+import { localizeProduct } from "../../services/productLocalizer";
+import { PRODUCT_CATEGORIES } from "../../types/product";
 import type { Product } from "../../types/product";
+import { WhatsAppIcon } from "../BrandIcons";
 import styles from "./ProductCard.module.css";
+
+const priceFormatter = new Intl.NumberFormat("pt-BR", {
+  style: "currency",
+  currency: "BRL",
+});
 
 interface ProductCardProps {
   product: Product;
-  /** Chamado ao clicar no card (abre o modal no pai). */
   onOpen: (product: Product) => void;
 }
 
-export function ProductCard({ product, onOpen }: ProductCardProps) {
-  const { t, language } = usePreferences();
-  const tiltRef = useTilt<HTMLElement>(6); // inclinação máxima: 6 graus
-  const priceFormatter = useMemo(
-    () => new Intl.NumberFormat(language, { style: "currency", currency: "BRL" }),
-    [language],
-  );
-
+export function ProductCard({ product: rawProduct, onOpen }: ProductCardProps) {
+  const { language, t } = usePreferences();
+  const product = localizeProduct(rawProduct, language);
   const cardImage = product.image ?? product.images?.[0];
-  const category = t(`categories.${product.category}`);
+  const categoryLabel =
+    PRODUCT_CATEGORIES.find((c) => c.id === product.category)?.label ??
+    product.category;
 
-  const whatsappUrl = buildWhatsAppUrl(
-    t("product.whatsappMessage", { name: product.name, category }),
-  );
+  const whatsappMessage = `Olá! Tenho interesse no produto "${product.name}". Poderia me passar mais informações?`;
+  const whatsappUrl = buildWhatsAppUrl(whatsappMessage);
 
   return (
-    <article ref={tiltRef} className={styles.card}>
+    <article className={styles.card}>
       <button
         type="button"
         className={styles.cardClickable}
-        onClick={() => onOpen(product)}
-        aria-label={t("product.viewDetails", { name: product.name })}
+        onClick={() => onOpen(rawProduct)}
+        aria-label={`${t("catalog.card.details")} ${product.name}`}
       >
         <div className={styles.imageArea}>
           {cardImage ? (
@@ -50,16 +50,12 @@ export function ProductCard({ product, onOpen }: ProductCardProps) {
           ) : (
             <div
               className={styles.imagePlaceholder}
-              style={
-                { "--product-accent": product.accent } as CSSProperties
-              }
+              style={{ "--product-accent": product.accent } as CSSProperties}
               aria-hidden="true"
             />
           )}
 
-          <span className={styles.categoryBadge}>
-            {category}
-          </span>
+          <span className={styles.categoryBadge}>{categoryLabel}</span>
 
           {product.badge && (
             <span className={styles.highlightBadge}>{product.badge}</span>
@@ -79,7 +75,7 @@ export function ProductCard({ product, onOpen }: ProductCardProps) {
           </span>
           <span className={styles.leadTime}>
             <Clock size={14} aria-hidden="true" />
-            {t("product.leadTime", { days: product.leadTimeDays })}
+            {product.leadTimeDays} {t("catalog.card.days")}
           </span>
         </div>
 
@@ -90,12 +86,8 @@ export function ProductCard({ product, onOpen }: ProductCardProps) {
           className={styles.cta}
         >
           <WhatsAppIcon size={16} />
-          {t("product.cta")}
-          <ArrowUpRight
-            size={14}
-            className={styles.ctaArrow}
-            aria-hidden="true"
-          />
+          {t("catalog.card.cta")}
+          <ArrowUpRight size={14} className={styles.ctaArrow} aria-hidden="true" />
         </a>
       </div>
     </article>

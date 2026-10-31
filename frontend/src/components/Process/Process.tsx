@@ -1,20 +1,18 @@
 import { usePreferences } from "../../context/usePreferences";
-import { useSectionFx } from "../../hooks/useSectionFx";
 import { Reveal } from "../Reveal/Reveal";
-import type { RevealDirection } from "../Reveal/Reveal";
 import styles from "./Process.module.css";
-
-// Cada etapa entra de um lado: esquerda → de baixo → direita
-const DIRECTIONS: RevealDirection[] = ["right", "up", "left"];
-const STEP_COUNT = 3;
 
 export function Process() {
   const { t } = usePreferences();
-  const ref = useSectionFx<HTMLElement>();
+
+  const steps = [1, 2, 3].map((n) => ({
+    title: t(`process.step${n}.title`),
+    text: t(`process.step${n}.text`),
+  }));
 
   return (
-    <section ref={ref} className={styles.section}>
-      <div className={`${styles.inner} fx-fade`}>
+    <section className={styles.section}>
+      <div className={styles.inner}>
         <Reveal>
           <div className={styles.header}>
             <p className={styles.eyebrow}>{t("process.eyebrow")}</p>
@@ -23,21 +21,11 @@ export function Process() {
         </Reveal>
 
         <div className={styles.steps}>
-          {Array.from({ length: STEP_COUNT }).map((_, index) => (
-            <Reveal
-              key={index}
-              delay={index * 140}
-              direction={DIRECTIONS[index]}
-              distance={44}
-              scale
-            >
+          {steps.map((step, index) => (
+            <Reveal key={step.title} delay={index * 100}>
               <article className={styles.step}>
-                <h3 className={styles.stepTitle}>
-                  {t(`process.steps.${index}.title`)}
-                </h3>
-                <p className={styles.stepText}>
-                  {t(`process.steps.${index}.text`)}
-                </p>
+                <h3 className={styles.stepTitle}>{step.title}</h3>
+                <p className={styles.stepText}>{step.text}</p>
               </article>
             </Reveal>
           ))}

@@ -16,8 +16,6 @@
   gap: var(--space-5);
   max-width: 900px;
 
-  /* Efeito de scroll: o conteúdo desce um pouco, inclina (skew) e some.
-     --hero-p (0 → 1) é escrita por useHeroFx, sem re-render. */
   transform-origin: 50% 100%;
   transform: translate3d(0, calc(var(--hero-p, 0) * 70px), 0)
     skewY(calc(var(--hero-p, 0) * -2.5deg));
@@ -55,7 +53,6 @@
   color: transparent;
 }
 
-/* ---------- Clip-reveal: palavras sobem de uma máscara ---------- */
 .line {
   display: block;
 }
@@ -64,7 +61,6 @@
   display: inline-block;
   overflow: hidden;
   vertical-align: top;
-  /* folga para não cortar letras com perna (g, p, y) */
   padding-bottom: 0.14em;
   margin-bottom: -0.14em;
 }
@@ -83,7 +79,6 @@
   animation-delay: var(--d, 0ms);
 }
 
-/* Enquanto a tela de carregamento está visível, as animações esperam */
 :global(html[data-booting="true"]) .wordInner,
 :global(html[data-booting="true"]) .rise {
   animation-play-state: paused;

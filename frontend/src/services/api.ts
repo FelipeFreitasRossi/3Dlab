@@ -1,4 +1,5 @@
 import type { Product } from "../types/product";
+import type { ApiTestimonial } from "../types/testimonial";
 
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:8000";
 
@@ -19,4 +20,10 @@ export async function fetchProductById(
   signal?: AbortSignal,
 ): Promise<Product> {
   return fetchJson<Product>(`/api/products/${id}`, signal);
+}
+
+export async function fetchTestimonials(
+  signal?: AbortSignal,
+): Promise<ApiTestimonial[]> {
+  return fetchJson<ApiTestimonial[]>("/api/testimonials", signal);
 }

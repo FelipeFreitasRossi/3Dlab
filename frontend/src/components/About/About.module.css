@@ -141,8 +141,36 @@
   }
 }
 
-/* o conteúdo fica por cima dos anéis decorativos */
 .inner {
   position: relative;
   z-index: 1;
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+  grid-column: 1 / -1;
+}
+@media (max-width: 800px) {
+  .statsGrid { grid-template-columns: repeat(2, 1fr); }
+}
+.statCard {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: var(--space-4);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+.statValue {
+  font-size: var(--fs-2xl);
+  font-weight: 600;
+  font-family: var(--font-mono);
+}
+.statLabel {
+  font-size: var(--fs-xs);
+  color: var(--color-text-muted);
 }
