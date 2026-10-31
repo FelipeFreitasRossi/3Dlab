@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+{% block title %}Depoimentos — Pedra Lunar Admin{% endblock %}
+{% block content %}
+<header class="topbar">
+  <div class="topbar-inner">
+    <a href="/admin/" class="brand">
+      <img src="https://i.postimg.cc/KYFJDsWs/Pedra-Lunar.jpg" alt="" class="brand-logo" width="36" height="36">
+      <span class="brand-text">Pedra Lunar <span class="brand-tag">Admin</span></span>
+    </a>
+    <nav class="topbar-actions" aria-label="Seções do painel">
+      <a href="/admin/" class="btn-ghost"><span>Produtos</span></a>
+      <a href="/admin/depoimentos" class="btn-ghost btn-ghost--active" aria-current="page"><span>Depoimentos</span></a>
+      <a href="{{ site_url }}" target="_blank" rel="noopener" class="btn-ghost"><span>Ver site</span></a>
+      <button type="button" id="logout-btn" class="btn-ghost"><span>Sair</span></button>
+    </nav>
+  </div>
+</header>
+
+<main class="admin-main">
+  <section class="stats" aria-label="Resumo">
+    <div class="stat">
+      <span class="stat-label">Depoimentos publicados</span>
+      <strong class="stat-value" id="stat-count">—</strong>
+    </div>
+    <div class="stat">
+      <span class="stat-label">Nota média</span>
+      <strong class="stat-value" id="stat-rating">—</strong>
+    </div>
+    <div class="stat">
+      <span class="stat-label">Status da API</span>
+      <strong class="stat-value stat-value--ok"><span class="dot"></span> Online</strong>
+    </div>
+  </section>
+
+  <section class="panel" id="form-panel">
+    <header class="panel-header">
+      <div>
+        <h2 id="form-title">Novo depoimento</h2>
+        <p class="panel-subtitle" id="form-subtitle">
+          Aparece no carrossel "O que dizem sobre a Pedra Lunar" assim que for salvo.
+        </p>
+      </div>
+    </header>
+
+    <form id="testimonial-form" class="product-form" novalidate>
+      <div class="form-grid">
+        <div class="field field--full">
+          <label for="quote">Depoimento (PT) <span class="required">*</span></label>
+          <textarea id="quote" name="quote" required rows="4" maxlength="500" placeholder="O que o cliente disse sobre o seu trabalho"></textarea>
+          <small class="field-hint" id="quote-count">0 / 500</small>
+        </div>
+
+        <div class="field">
+          <label for="author">Nome do cliente <span class="required">*</span></label>
+          <input type="text" id="author" name="author" required maxlength="80" placeholder="Ex.: Mariana S.">
+        </div>
+
+        <div class="field">
+          <label for="role">Tipo de projeto (PT) <span class="required">*</span></label>
+          <input type="text" id="role" name="role" required maxlength="80" placeholder="Ex.: Peça decorativa">
+        </div>
+
+        <div class="field">
+          <label for="rating">Nota</label>
+          <select id="rating" name="rating">
+            <option value="5">5 estrelas</option>
+            <option value="4">4 estrelas</option>
+            <option value="3">3 estrelas</option>
+            <option value="2">2 estrelas</option>
+            <option value="1">1 estrela</option>
+          </select>
+        </div>
+      </div>
+
+      <details class="translation-section">
+        <summary>
+          <span>🇺🇸 English translation</span>
+          <small>Se ficar vazio, o site exibe o texto em português (Opcional)</small>
+        </summary>
+        <div class="translation-body">
+          <div class="field field--full">
+            <label for="quote_en">Testimonial (EN)</label>
+            <textarea id="quote_en" name="quote_en" rows="3" maxlength="500"></textarea>
+          </div>
+          <div class="field field--full">
+            <label for="role_en">Project type (EN)</label>
+            <input type="text" id="role_en" name="role_en" maxlength="80" placeholder="Ex.: Decorative piece">
+          </div>
+        </div>
+      </details>
+
+      <div class="form-actions">
+        <button type="button" class="btn-ghost" id="cancel-edit" hidden>Cancelar edição</button>
+        <button type="submit" class="btn-primary" id="submit-btn">
+          <span id="submit-text">Publicar depoimento</span>
+        </button>
+      </div>
+    </form>
+  </section>
+
+  <section class="panel">
+    <header class="panel-header panel-header--list">
+      <div>
+        <h2>Depoimentos publicados <span class="badge" id="count-badge">0</span></h2>
+        <p class="panel-subtitle">Edite ou exclua. Os mais recentes aparecem primeiro no carrossel.</p>
+      </div>
+    </header>
+    <div id="testimonials-list" class="products-list">
+      <p class="muted">Carregando depoimentos...</p>
+    </div>
+  </section>
+</main>
+
+<div id="delete-modal" class="modal-overlay" hidden>
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="delete-title">
+    <h3 id="delete-title">Excluir depoimento?</h3>
+    <p class="modal-message">Você está prestes a excluir o depoimento de <strong id="delete-name">—</strong>.</p>
+    <div class="modal-actions">
+      <button type="button" class="btn-ghost" id="delete-cancel">Cancelar</button>
+      <button type="button" class="btn-danger-solid" id="delete-confirm">Excluir</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container" class="toast-container" aria-live="polite"></div>
+{% endblock %}
+
+{% block scripts %}
+<script src="/admin/static/testimonials-admin.js"></script>
+{% endblock %}
